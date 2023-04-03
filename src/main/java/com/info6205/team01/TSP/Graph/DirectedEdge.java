@@ -1,6 +1,6 @@
 package com.info6205.team01.TSP.Graph;
 
-public class DirectedEdge implements Comparable<DirectedEdge> {
+public class DirectedEdge {
     private Node from;
     private Node to;
     private double weight;
@@ -11,9 +11,7 @@ public class DirectedEdge implements Comparable<DirectedEdge> {
         this.weight = Node.getDistance(from, to);
     }
 
-    public Node getFrom() {
-        return from;
-    }
+    public Node getFrom() { return from;}
 
     public Node getTo() {
         return to;
@@ -24,8 +22,18 @@ public class DirectedEdge implements Comparable<DirectedEdge> {
     }
 
     @Override
-    public int compareTo(DirectedEdge other) {
-        return Double.compare(weight, other.weight);
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof DirectedEdge)) {
+            return false;
+        }
+
+        DirectedEdge edge = (DirectedEdge) obj;
+        Node from = edge.getFrom(), to = edge.getTo();
+        return this.from == from && this.to == to;
     }
 
     @Override

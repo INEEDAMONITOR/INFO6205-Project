@@ -42,4 +42,17 @@ public class Node {
     public static double getDistance(Node node1, Node node2) {
         return Tools.distance(node1.latitude, node1.longitude, node2.getLatitude(), node2.getLongitude());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (!(obj instanceof Node)) {
+            return false;
+        }
+        Node node = (Node) obj;
+        return this.id.equals(node.getId()) && this.longitude == node.getLongitude() && this.latitude == node.getLatitude();
+    }
 }

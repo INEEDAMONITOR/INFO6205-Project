@@ -8,7 +8,7 @@ public class UndirectedEdge {
     public UndirectedEdge(Node node1, Node node2) {
         this.node1 = node1;
         this.node2 = node2;
-        weight = Node.getDistance(node1, node2);
+        this.weight = Node.getDistance(node1, node2);
     }
 
     public Node[] getNodes() {
