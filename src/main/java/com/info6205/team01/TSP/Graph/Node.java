@@ -28,6 +28,10 @@ public class Node {
         return latitude;
     }
 
+    public Node(Node rhs) {
+        this(rhs.getId(), rhs.getLongitude(), rhs.getLatitude());
+    }
+
     @Override
     public String toString() {
         return this.id + " " + this.longitude + " " + this.latitude;

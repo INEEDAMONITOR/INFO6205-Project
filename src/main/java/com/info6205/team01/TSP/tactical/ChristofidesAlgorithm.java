@@ -20,7 +20,7 @@ public class ChristofidesAlgorithm {
 //        nodes.add(new Node("5", 0.05328, 51.604349));
 
         Preprocessing preprocessing = new Preprocessing();
-        List<Node> nodes = preprocessing.getNodes().subList(0, 8);
+        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
 
         /* --------------------------------------------------------------------- */
         // Build original graph with directed edges
@@ -47,7 +47,7 @@ public class ChristofidesAlgorithm {
         // Sum up the weight of Hamiltonian Circuit;
         double sum = 0.0;
         if(hamiltonianCircuit != null) {
-            for(int i = 1; i < hamiltonianCircuit.size(); i--) {
+            for(int i = 1; i < hamiltonianCircuit.size(); i++) {
                 Node from = hamiltonianCircuit.get(i - 1), to = hamiltonianCircuit.get(i);
                 DirectedEdge e = new DirectedEdge(from, to);
                 sum += e.getWeight();
@@ -162,8 +162,16 @@ public class ChristofidesAlgorithm {
     }
 
     // Combine matches and MST to build a multigraph
-    public Map<Node, List<DirectedEdge>> combine(Map<Node, List<DirectedEdge>> MST, Map<Node, Node> matches) {
-        Map<Node, List<DirectedEdge>> multiGraph = new HashMap<>(MST);
+    private Map<Node, List<DirectedEdge>> combine(Map<Node, List<DirectedEdge>> MST, Map<Node, Node> matches) {
+        Map<Node, List<DirectedEdge>> multiGraph = new HashMap<>();
+
+        // Must use deep copy
+        for(Node node : MST.keySet()) {
+            multiGraph.put(node, new ArrayList<>());
+            for(DirectedEdge e : MST.get(node)) {
+                multiGraph.get(node).add(new DirectedEdge(e));
+            }
+        }
 
         matches.forEach((k, v) -> {
             DirectedEdge edge = new DirectedEdge(k, v);
@@ -174,17 +182,26 @@ public class ChristofidesAlgorithm {
     }
 
     // Find Eulerian Circuit
-    public List<Node> findEulerianCircuit(Map<Node, List<DirectedEdge>> graph) {
-        EulerianCircuit ec = new EulerianCircuit(graph, this.nodeToIndex, this.nodearray);
+    public List<Node> findEulerianCircuit(Map<Node, List<DirectedEdge>> multiGraph) {
+        Map<Node, List<DirectedEdge>> graph = new HashMap<>();
+
+        // Must use deep copy
+        for(Node node : multiGraph.keySet()) {
+            graph.put(node, new ArrayList<>());
+            for(DirectedEdge e : multiGraph.get(node)) {
+                graph.get(node).add(new DirectedEdge(e));
+            }
+        }
+
+        EulerianCircuit ec = new EulerianCircuit(graph, nodeToIndex, nodearray);
         List<Node> circuit = ec.getEulerianCircuit();
         return circuit;
     }
 
-    // Find Hamiltonian Circuit
+    // Convert Eulerian Circuit to Hamiltonian Circuit
     public List<Node> convertHamiltonianCircuit(List<Node> eulerianCircuit, Map<Node, List<DirectedEdge>> multiGraph) {
-        // Convert Eulerian Circuit to Hamiltonian Circuit
         HamiltonianCircuit hc = new HamiltonianCircuit(eulerianCircuit, multiGraph);
-        List<Node> hamiltonianCircuit = hc.EulerianToHamiltonian();
+        List<Node> hamiltonianCircuit = hc.convertEulerianToHamiltonian();
         return hamiltonianCircuit;
     }
 
