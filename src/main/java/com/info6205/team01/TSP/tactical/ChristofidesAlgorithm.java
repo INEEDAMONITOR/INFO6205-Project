@@ -12,7 +12,7 @@ import com.info6205.team01.TSP.util.BlossomAlgorithm;
 
 public class ChristofidesAlgorithm {
     public static void main(String[] args) {
-//        ArrayList<Node> nodes = new ArrayList<>();
+//        List<Node> nodes = new ArrayList<>();
 //        nodes.add(new Node("1", -0.172148, 51.479017));
 //        nodes.add(new Node("2", -0.0844192, 51.5682443));
 //        nodes.add(new Node("3", 0.0224653, 51.5338612));
