@@ -12,15 +12,15 @@ import com.info6205.team01.TSP.util.BlossomAlgorithm;
 
 public class ChristofidesAlgorithm {
     public static void main(String[] args) {
-//        List<Node> nodes = new ArrayList<>();
-//        nodes.add(new Node("1", -0.172148, 51.479017));
-//        nodes.add(new Node("2", -0.0844192, 51.5682443));
-//        nodes.add(new Node("3", 0.0224653, 51.5338612));
-//        nodes.add(new Node("4", -0.3050444, 51.3938231));
-//        nodes.add(new Node("5", 0.05328, 51.604349));
+        List<Node> nodes = new ArrayList<>();
+        nodes.add(new Node("1", -0.172148, 51.479017));
+        nodes.add(new Node("2", -0.0844192, 51.5682443));
+        nodes.add(new Node("3", 0.0224653, 51.5338612));
+        nodes.add(new Node("4", -0.3050444, 51.3938231));
+        nodes.add(new Node("5", 0.05328, 51.604349));
 
-        Preprocessing preprocessing = new Preprocessing();
-        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
+//        Preprocessing preprocessing = new Preprocessing();
+//        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
 
         /* --------------------------------------------------------------------- */
         // Build original graph with directed edges
@@ -55,6 +55,11 @@ public class ChristofidesAlgorithm {
             System.out.println("Christofides Algorithm's minCost: " + sum);
         }
         else System.out.println("Hamiltonian Circult is NULL!");
+
+        for(Node node : hamiltonianCircuit) {
+            System.out.print(node.getId() + " -> ");
+        }
+        System.out.print(hamiltonianCircuit.get(0).getId());
     }
 
     public ChristofidesAlgorithm(List<Node> nodes) {

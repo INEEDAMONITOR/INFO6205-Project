@@ -7,7 +7,6 @@ import com.info6205.team01.TSP.Graph.DirectedEdge;
 import com.info6205.team01.TSP.util.Preprocessing;
 
 public class AntColonyOptimization {
-
     public static void main(String[] args) {
         List<Node> nodes = new ArrayList<>();
         nodes.add(new Node("1", -0.172148, 51.479017));
@@ -24,8 +23,7 @@ public class AntColonyOptimization {
 
         aco.run();
 
-        System.out.println("end");
-
+        aco.result();
     }
 
     public AntColonyOptimization(List<Node> nodes, int ants, int iterations, double evapRate, int alpha, int beta) {
@@ -34,9 +32,11 @@ public class AntColonyOptimization {
         this.evapRate = evapRate;
         this.alpha = alpha;
         this.beta = beta;
+        this.bestTourLength = Double.POSITIVE_INFINITY;
 
-        int n = nodes.size(), i = 0;
-        this.nodearray = new Node[n];
+        this.N = nodes.size();
+        int i = 0;
+        this.nodearray = new Node[N];
         this.nodeToIndex = new HashMap<>();
         for(Node node : nodes) {
             nodearray[i] = node;
@@ -44,37 +44,44 @@ public class AntColonyOptimization {
         }
 
         // Cost Matrix
-        this.costMatrix = new double[n][n];
-        for(int j = 0; j < n; j++) {
-            for(int k = 0; k < n; k++) {
-                Node node1 = nodearray[j], node2 = nodearray[k];
-                DirectedEdge e = new DirectedEdge(node1, node2);
-                costMatrix[j][k] = e.getWeight();
-            }
-        }
+//        this.costMatrix = new double[N][N];
+//        for(int j = 0; j < N; j++) {
+//            for(int k = 0; k < N; k++) {
+//                Node node1 = nodearray[j], node2 = nodearray[k];
+//                DirectedEdge e = new DirectedEdge(node1, node2);
+//                costMatrix[j][k] = e.getWeight();
+//            }
+//        }
 
         // Initialize Pheromone Matrix;
-        this.pheromoneMatrix = new double[n][n];
-        for(int r = 0; r < n; r++) {
-            for(int c = 0; c < n; c++) {
-                pheromoneMatrix[r][c] = 1.0 / (double)(n * n);
+        this.pheromoneMatrix = new double[N][N];
+        for(int r = 0; r < N; r++) {
+            for(int c = 0; c < N; c++) {
+                pheromoneMatrix[r][c] = 1.0 / (double)(N * N);
             }
         }
 
-        // Create Whole Graph with all nodes
+        // Create Whole Graph & costMatrix with all nodes
+        this.costMatrix = new double[N][N];
         this.originalGraph = buildGraph();
     }
 
     public Map<Node, List<DirectedEdge>> buildGraph() {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
-        for(int i = 0; i < nodearray.length; i++) {
+        for(int i = 0; i < N; i++) {
             Node node1 = nodearray[i];
-            for(int j = i + 1; j < nodearray.length; j++) {
+            for(int j = i + 1; j < N; j++) {
                 Node node2 = nodearray[j];
+                // node1 -> node2
                 if(!graph.containsKey(node1)) graph.put(node1, new ArrayList<>());
-                graph.get(node1).add(new DirectedEdge(node1, node2));
+                DirectedEdge de1 = new DirectedEdge(node1, node2);
+                graph.get(node1).add(de1);
+                costMatrix[i][j] = de1.getWeight();
+                // node2 -> node1
                 if(!graph.containsKey(node2)) graph.put(node2, new ArrayList<>());
-                graph.get(node2).add(new DirectedEdge(node2, node1));
+                DirectedEdge de2 = new DirectedEdge(node2, node1);
+                graph.get(node2).add(de2);
+                costMatrix[j][i] = de2.getWeight();
             }
         }
         return graph;
@@ -95,17 +102,17 @@ public class AntColonyOptimization {
     public List<Integer> buildTour() {
         List<Integer> tour = new ArrayList<>();
         Set<Integer> unvisited = new HashSet<>();
-        for(int i = 0; i < nodearray.length; i++) unvisited.add(i);
 
-        int cur = new Random().nextInt(nodearray.length);
+        for(int i = 0; i < N; i++) unvisited.add(i);
 
+        int cur = new Random().nextInt(this.N);
         tour.add(cur);
         unvisited.remove(cur);
 
         while(!unvisited.isEmpty()) {
             int next = getNextCity(cur, unvisited);
             tour.add(next);
-            unvisited.add(next);
+            unvisited.remove(next);
             cur = next;
         }
         return tour;
@@ -120,18 +127,13 @@ public class AntColonyOptimization {
         double wheelPosition = 0.0;
         for (int city : unvisited) {
             wheelPosition += Math.pow(pheromoneMatrix[cur][city], alpha) * Math.pow(1.0 / costMatrix[cur][city], beta);
-            if (rouletteWheel <= wheelPosition) {
-                return city;
-            }
+            if (rouletteWheel <= wheelPosition) return city;
         }
         return -1;
     }
 
     public void updataBestTour(List<Integer> tour) {
-        double len = 0.0;
-        for(int i = 0; i < nodearray.length; i++) {
-            len += costMatrix[tour.get(i)][tour.get((i + 1) % nodearray.length)];
-        }
+        double len = getTourLength(tour);
         if(len < bestTourLength) {
             bestTourLength = len;
             bestTour = new ArrayList<>(tour);
@@ -139,15 +141,47 @@ public class AntColonyOptimization {
     }
 
     public void updatePheromoneMatrix(List<List<Integer>> tours) {
-
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < N; j++) {
+                double totalPheromoneDeposit = 0.0;
+                for(List<Integer> tour : tours)
+                    totalPheromoneDeposit += getPheromoneDeposit(tour, i, j);
+                pheromoneMatrix[i][j] = (1 - evapRate) * pheromoneMatrix[i][j] + totalPheromoneDeposit;
+            }
+        }
     }
 
+    private double getTourLength(List<Integer> tour) {
+        double len = 0.0;
 
+        // Calculate the length of this tour
+        for(int i = 0; i < N; i++)
+            len += costMatrix[tour.get(i)][tour.get((i + 1) % N)];
 
+        return len;
+    }
+
+    private double getPheromoneDeposit(List<Integer> tour, int i, int j) {
+        for(int k = 0; k < N; k++) {
+            if(tour.get(k) == i && tour.get((k + 1) % N) == j || tour.get(k) == j && tour.get((k + 1) % N) == i)
+                return 1.0 / getTourLength(tour);
+        }
+        return 0.0;
+    }
+
+    public void result() {
+        System.out.println("Best tour length: " + bestTourLength);
+
+        for(Integer i : bestTour) {
+            System.out.print(nodearray[i].getId() + " -> ");
+        }
+        System.out.print(nodearray[bestTour.get(0)].getId());
+    }
 
     private Map<Node, List<DirectedEdge>> originalGraph;
     private Map<Node, Integer> nodeToIndex;
     private Node[] nodearray;
+    private int N;
 
     private int ants;      // Number of ants
     private int iterations;       // Number of iterations (t_max)
@@ -156,6 +190,6 @@ public class AntColonyOptimization {
     double[][] pheromoneMatrix;
     private double[][] costMatrix;
 
-    double bestTourLength = Double.POSITIVE_INFINITY;
+    double bestTourLength;
     List<Integer> bestTour;
 }
