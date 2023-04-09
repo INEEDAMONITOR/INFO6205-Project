@@ -23,7 +23,7 @@ public class MST {
         for (int i = 0; i < points.length; i++) {
             for (int j = i+1; j < points.length; j++) {
 //                double dist = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
-                double dist = Tools.distance(points[i][0], points[i][1], points[j][0], points[j][1]);
+                double dist = Tools.distance(points[i][1], points[i][0], points[j][1], points[j][0]);
                 edges.add(new MyEdge(i,j,dist));
             }
         }

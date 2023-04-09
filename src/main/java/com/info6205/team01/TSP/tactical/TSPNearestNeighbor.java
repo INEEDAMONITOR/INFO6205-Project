@@ -16,7 +16,7 @@ public class TSPNearestNeighbor {
 
     public double findShortestPath(List<Integer> tour) {
         visited[0] = true;
-        tour.add(1);
+        tour.add(0);
         int currentPos = 0;
         int nearestNeighbor = 0;
         double shortestDistance = 0;
@@ -36,7 +36,7 @@ public class TSPNearestNeighbor {
 
             if (minFlag == true) {
                 visited[nearestNeighbor] = true;
-                tour.add(nearestNeighbor + 1);
+                tour.add(nearestNeighbor);
                 minFlag = false;
                 currentPos = nearestNeighbor;
             }

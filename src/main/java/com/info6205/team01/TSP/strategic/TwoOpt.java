@@ -5,6 +5,8 @@ public class TwoOpt {
         int n = tour.length;
         int[] newTour = null;
         double minDistance = calculateDistance(tour, distances);
+        System.out.println("Unchanged distance: " + minDistance);
+        int[] oldTourRef = tour;
         boolean improvement = true;
 
         while (improvement) {
@@ -25,6 +27,9 @@ public class TwoOpt {
                     }
                 }
             }
+        }
+        for (int i = 0; i < n; i++) {
+            oldTourRef[i] = tour[i];
         }
 
         return minDistance;
