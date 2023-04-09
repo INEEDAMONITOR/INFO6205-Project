@@ -5,6 +5,7 @@ public class ThreeOpt {
         int n = tour.length;
         boolean improvement = true;
         double minDistance = calculateDistance(tour, distances);
+        int[] oldTourRef = tour;
 
         while (improvement) {
             improvement = false;
@@ -26,6 +27,9 @@ public class ThreeOpt {
                     }
                 }
             }
+        }
+        for (int i = 0; i < n; i++) {
+            oldTourRef[i] = tour[i];
         }
 
         return minDistance;
