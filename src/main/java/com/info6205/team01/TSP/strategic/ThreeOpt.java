@@ -1,9 +1,11 @@
 package com.info6205.team01.TSP.strategic;
 
 public class ThreeOpt {
-    public int[] optimize(int[] tour, int[][] distances) {
+    public double optimize(int[] tour, double[][] distances) {
         int n = tour.length;
         boolean improvement = true;
+        double minDistance = calculateDistance(tour, distances);
+        int[] oldTourRef = tour;
 
         while (improvement) {
             improvement = false;
@@ -14,19 +16,23 @@ public class ThreeOpt {
                         // evaluate all possible 3-opt swaps
                         int[] newTour = threeOptSwap(tour, i, j, k, n);
                         // calculate new distance
-                        int newDist = calculateDistance(newTour, distances);
+                        double newDist = calculateDistance(newTour, distances);
 
-                        if (newDist < calculateDistance(tour, distances)) {
+                        if (newDist < minDistance) {
                             // new tour is better, keep it
                             tour = newTour;
                             improvement = true;
+                            minDistance = newDist;
                         }
                     }
                 }
             }
         }
+        for (int i = 0; i < n; i++) {
+            oldTourRef[i] = tour[i];
+        }
 
-        return tour;
+        return minDistance;
     }
 
     // helper method for performing a 3-opt swap
@@ -53,8 +59,8 @@ public class ThreeOpt {
     }
 
     // helper method for calculating the distance of a tour
-    private int calculateDistance(int[] tour, int[][] distances) {
-        int distance = 0;
+    private double calculateDistance(int[] tour, double[][] distances) {
+        double distance = 0;
         for (int i = 0; i < tour.length - 1; i++) {
             distance += distances[tour[i]][tour[i+1]];
         }
