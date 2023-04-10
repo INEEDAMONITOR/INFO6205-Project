@@ -16,7 +16,7 @@ public class AntColonyOptimization {
         nodes.add(new Node("5", 0.05328, 51.604349));
 
 //        Preprocessing preprocessing = new Preprocessing();
-//        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
+//        List<Node> nodes = preprocessing.getNodes().subList(0, 15);
 
         // Initialize variables for ACO
         AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
@@ -42,16 +42,6 @@ public class AntColonyOptimization {
             nodearray[i] = node;
             nodeToIndex.put(node, i++);
         }
-
-        // Cost Matrix
-//        this.costMatrix = new double[N][N];
-//        for(int j = 0; j < N; j++) {
-//            for(int k = 0; k < N; k++) {
-//                Node node1 = nodearray[j], node2 = nodearray[k];
-//                DirectedEdge e = new DirectedEdge(node1, node2);
-//                costMatrix[j][k] = e.getWeight();
-//            }
-//        }
 
         // Initialize Pheromone Matrix;
         this.pheromoneMatrix = new double[N][N];
@@ -129,6 +119,7 @@ public class AntColonyOptimization {
             wheelPosition += Math.pow(pheromoneMatrix[cur][city], alpha) * Math.pow(1.0 / costMatrix[cur][city], beta);
             if (rouletteWheel <= wheelPosition) return city;
         }
+
         return -1;
     }
 
@@ -172,10 +163,11 @@ public class AntColonyOptimization {
     public void result() {
         System.out.println("Best tour length: " + bestTourLength);
 
+        System.out.print("Path: ");
         for(Integer i : bestTour) {
             System.out.print(nodearray[i].getId() + " -> ");
         }
-        System.out.print(nodearray[bestTour.get(0)].getId());
+        System.out.println(nodearray[bestTour.get(0)].getId());
     }
 
     private Map<Node, List<DirectedEdge>> originalGraph;

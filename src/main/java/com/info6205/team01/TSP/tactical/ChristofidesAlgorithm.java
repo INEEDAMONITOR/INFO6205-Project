@@ -20,7 +20,7 @@ public class ChristofidesAlgorithm {
         nodes.add(new Node("5", 0.05328, 51.604349));
 
 //        Preprocessing preprocessing = new Preprocessing();
-//        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
+//        List<Node> nodes = preprocessing.getNodes().subList(0, 15);
 
         /* --------------------------------------------------------------------- */
         // Build original graph with directed edges
@@ -52,14 +52,15 @@ public class ChristofidesAlgorithm {
                 DirectedEdge e = new DirectedEdge(from, to);
                 sum += e.getWeight();
             }
-            System.out.println("Christofides Algorithm's minCost: " + sum);
+            System.out.println("Best tour length: " + sum);
         }
         else System.out.println("Hamiltonian Circult is NULL!");
 
+        System.out.print("Path: ");
         for(Node node : hamiltonianCircuit) {
             System.out.print(node.getId() + " -> ");
         }
-        System.out.print(hamiltonianCircuit.get(0).getId());
+        System.out.println(hamiltonianCircuit.get(0).getId());
     }
 
     public ChristofidesAlgorithm(List<Node> nodes) {
