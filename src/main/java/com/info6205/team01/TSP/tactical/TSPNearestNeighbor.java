@@ -1,23 +1,22 @@
 package com.info6205.team01.TSP.tactical;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TSPNearestNeighbor {
     private int numberOfNodes;
     private boolean[] visited;
-    private ArrayList<Integer> tour;
     private double[][] adjacencyMatrix;
 
     public TSPNearestNeighbor(double[][] adjacencyMatrix) {
         this.adjacencyMatrix = adjacencyMatrix;
         numberOfNodes = adjacencyMatrix[0].length;
         visited = new boolean[numberOfNodes];
-        tour = new ArrayList<>();
     }
 
-    public void findShortestPath() {
+    public double findShortestPath(List<Integer> tour) {
         visited[0] = true;
-        tour.add(1);
+        tour.add(0);
         int currentPos = 0;
         int nearestNeighbor = 0;
         double shortestDistance = 0;
@@ -37,7 +36,7 @@ public class TSPNearestNeighbor {
 
             if (minFlag == true) {
                 visited[nearestNeighbor] = true;
-                tour.add(nearestNeighbor + 1);
+                tour.add(nearestNeighbor);
                 minFlag = false;
                 currentPos = nearestNeighbor;
             }
@@ -49,6 +48,7 @@ public class TSPNearestNeighbor {
         System.out.println("Nearest Neighbor Heuristic Algorithm Result: ");
         System.out.println("Tour: " + tour);
         System.out.println("Shortest Distance: " + shortestDistance);
+        return shortestDistance;
     }
 
     public static void main(String[] args) {
@@ -57,6 +57,10 @@ public class TSPNearestNeighbor {
                 {15, 35, 0, 30},
                 {20, 25, 30, 0}};
         TSPNearestNeighbor tsp = new TSPNearestNeighbor(adjacencyMatrix);
-        tsp.findShortestPath();
+        List<Integer> tour = new ArrayList<>();
+        double distance = tsp.findShortestPath(tour);
+
+        System.out.println("Tour: " + tour);
+        System.out.println("Shortest Distance: " + distance);
     }
 }

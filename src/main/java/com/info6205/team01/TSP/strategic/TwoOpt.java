@@ -1,9 +1,12 @@
 package com.info6205.team01.TSP.strategic;
 
 public class TwoOpt {
-    public int[] optimize(int[] tour, int[][] distances) {
+    public double optimize(int[] tour, double[][] distances) {
         int n = tour.length;
         int[] newTour = null;
+        double minDistance = calculateDistance(tour, distances);
+        System.out.println("Unchanged distance: " + minDistance);
+        int[] oldTourRef = tour;
         boolean improvement = true;
 
         while (improvement) {
@@ -14,18 +17,22 @@ public class TwoOpt {
                     // 2-opt swap
                     newTour = twoOptSwap(tour, i, j);
                     // check new distance
-                    int newDist = calculateDistance(newTour, distances);
+                    double newDist = calculateDistance(newTour, distances);
 
-                    if (newDist < calculateDistance(tour, distances)) {
+                    if (newDist < minDistance) {
                         // new tour is better, keep it
                         tour = newTour;
+                        minDistance = newDist;
                         improvement = true;
                     }
                 }
             }
         }
+        for (int i = 0; i < n; i++) {
+            oldTourRef[i] = tour[i];
+        }
 
-        return tour;
+        return minDistance;
     }
 
     // helper method for performing a 2-opt swap
@@ -48,8 +55,8 @@ public class TwoOpt {
     }
 
     // helper method for calculating the distance of a tour
-    private int calculateDistance(int[] tour, int[][] distances) {
-        int distance = 0;
+    private double calculateDistance(int[] tour, double[][] distances) {
+        double distance = 0;
         for (int i = 0; i < tour.length - 1; i++) {
             distance += distances[tour[i]][tour[i+1]];
         }
