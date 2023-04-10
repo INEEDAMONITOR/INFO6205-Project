@@ -92,11 +92,8 @@ public class GreedyHeuristic {
         initEdge.getNodes()[1].increseDegree();
         resEdges.add(initEdge);
         counter = 2;
-        System.out.println(resEdges);
         while (!edgesWeightMinHeap.isEmpty()) {
-            System.out.println(resEdges);
             UndirectedEdge edge = edgesWeightMinHeap.poll();
-            System.out.println(edge);
             Node[] nodes = edge.getNodes();
             Node node1 = nodes[0];
             Node node2 = nodes[1];
@@ -169,5 +166,34 @@ public class GreedyHeuristic {
             }
         }
         return false;
+    }
+    public List<Node> getMinNodes() {
+        List<UndirectedEdge> edges = new ArrayList<>(findMinRoute());
+        List<Node> res = new ArrayList<>();
+        Set<Node> visited = new HashSet<>();
+
+        UndirectedEdge edge = edges.get(0);
+        edges.remove(0);
+        res.add(edge.getNodes()[0]);
+        res.add(edge.getNodes()[1]);
+        Node cur = edge.getNodes()[1];
+        visited.add(edge.getNodes()[0]);
+        visited.add(edge.getNodes()[1]);
+
+        while (edges.size() != 1) {
+            for (int i = 0; i < edges.size(); i++) {
+                Node next = edges.get(i).containsNodes(cur);
+                if (next != null && !visited.contains(next)) {
+                    System.out.println(next);
+                   cur = next;
+                   visited.add(cur);
+                   res.add(next);
+                   edges.remove(i);
+                   continue;
+                }
+            }
+            System.out.println(edges.size());
+        }
+        return res;
     }
 }
