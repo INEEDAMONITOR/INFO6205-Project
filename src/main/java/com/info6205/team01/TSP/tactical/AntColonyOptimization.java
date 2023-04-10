@@ -5,6 +5,7 @@ import java.util.*;
 import com.info6205.team01.TSP.Graph.Node;
 import com.info6205.team01.TSP.Graph.DirectedEdge;
 import com.info6205.team01.TSP.util.Preprocessing;
+import com.info6205.team01.TSP.visualization.TestVis;
 
 public class AntColonyOptimization {
     public static void main(String[] args) {
@@ -19,11 +20,15 @@ public class AntColonyOptimization {
 //        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
 
         // Initialize variables for ACO
-        AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
+        TestVis tv = new TestVis();
+
+        AntColonyOptimization aco = new AntColonyOptimization(tv.nodes.subList(0, 15), 10, 100, 0,1, 5);
 
         aco.run();
 
         aco.result();
+
+        tv.showResult((aco.resultForTestVis()));
     }
 
     public AntColonyOptimization(List<Node> nodes, int ants, int iterations, double evapRate, int alpha, int beta) {
@@ -176,6 +181,16 @@ public class AntColonyOptimization {
             System.out.print(nodearray[i].getId() + " -> ");
         }
         System.out.print(nodearray[bestTour.get(0)].getId());
+    }
+    public List<Node> resultForTestVis() {
+        List<Node> res = new ArrayList<>();
+        for(Integer i : bestTour) {
+            res.add(nodearray[i]);
+        }
+        return res;
+    }
+    public List<Node> getNodes() {
+        return Arrays.asList(nodearray);
     }
 
     private Map<Node, List<DirectedEdge>> originalGraph;
