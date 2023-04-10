@@ -9,6 +9,7 @@ import com.info6205.team01.TSP.util.EulerianCircuit;
 import com.info6205.team01.TSP.util.HamiltonianCircuit;
 import com.info6205.team01.TSP.util.Preprocessing;
 import com.info6205.team01.TSP.util.BlossomAlgorithm;
+import com.info6205.team01.TSP.visualization.TestVis;
 
 public class ChristofidesAlgorithm {
     public static void main(String[] args) {
@@ -56,7 +57,13 @@ public class ChristofidesAlgorithm {
         }
         else System.out.println("Hamiltonian Circult is NULL!");
 
+<<<<<<< HEAD
         System.out.print("Path: ");
+=======
+        TestVis tv = new TestVis();
+        tv.showResult(hamiltonianCircuit);
+
+>>>>>>> main
         for(Node node : hamiltonianCircuit) {
             System.out.print(node.getId() + " -> ");
         }
