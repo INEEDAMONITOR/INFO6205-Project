@@ -206,7 +206,6 @@ public class GreedyHeuristic {
         }
         return res;
     }
-
     public List<GraphOperation> getGos() {
         return gos;
     }
@@ -215,4 +214,5 @@ public class GreedyHeuristic {
     //    double[][] adjacentMatrix;
     private final PriorityQueue<UndirectedEdge> edgesWeightMinHeap;
     List<GraphOperation> gos = new ArrayList<>();
+
 }
