@@ -10,7 +10,8 @@ import java.util.Scanner;
 
 public class Preprocessing {
 
-    String path = "/Users/yuxichen/Documents/NEU Obsidian/NEU/Graduate/2023 Spring/INFO6205 Program Structure & Algorithms 39568/TSP/INFO6205-Project/src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv";
+    String path2 = "/Users/dengyongyan/Desktop/INFO6205/Final/INFO6205-Project/src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv";
+    // String path = "/Users/yuxichen/Documents/NEU Obsidian/NEU/Graduate/2023 Spring/INFO6205 Program Structure & Algorithms 39568/TSP/INFO6205-Project/src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv";
     ArrayList<Node> nodes = new ArrayList<>();
 
     public List<Node> getNodes() {
@@ -21,7 +22,7 @@ public class Preprocessing {
         //parsing a CSV file into Scanner class constructor
         Scanner sc = null;
         try {
-            sc = new Scanner(new File(path));
+            sc = new Scanner(new File(path2));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
