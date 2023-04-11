@@ -9,26 +9,24 @@ import com.info6205.team01.TSP.visualization.TestVis;
 
 public class AntColonyOptimization {
     public static void main(String[] args) {
-        List<Node> nodes = new ArrayList<>();
-        nodes.add(new Node("1", -0.172148, 51.479017));
-        nodes.add(new Node("2", -0.0844192, 51.5682443));
-        nodes.add(new Node("3", 0.0224653, 51.5338612));
-        nodes.add(new Node("4", -0.3050444, 51.3938231));
-        nodes.add(new Node("5", 0.05328, 51.604349));
+//        List<Node> nodes = new ArrayList<>();
+//        nodes.add(new Node("1", -0.172148, 51.479017));
+//        nodes.add(new Node("2", -0.0844192, 51.5682443));
+//        nodes.add(new Node("3", 0.0224653, 51.5338612));
+//        nodes.add(new Node("4", -0.3050444, 51.3938231));
+//        nodes.add(new Node("5", 0.05328, 51.604349));
 
 //        Preprocessing preprocessing = new Preprocessing();
 //        List<Node> nodes = preprocessing.getNodes().subList(0, 15);
 
         // Initialize variables for ACO
-        TestVis tv = new TestVis();
-
-        AntColonyOptimization aco = new AntColonyOptimization(tv.nodes.subList(0, 15), 10, 100, 0,1, 5);
+        tv = new TestVis();
+        List<Node> nodes = tv.nodes.subList(0, 100);
+        AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
 
         aco.run();
 
         aco.result();
-
-        tv.showResult((aco.resultForTestVis()));
     }
 
     public AntColonyOptimization(List<Node> nodes, int ants, int iterations, double evapRate, int alpha, int beta) {
@@ -82,6 +80,7 @@ public class AntColonyOptimization {
         return graph;
     }
 
+    // Execute ACO
     public void run() {
         for(int i = 0; i < iterations; i++) {
             List<List<Integer>> tours = new ArrayList<>();
@@ -168,21 +167,12 @@ public class AntColonyOptimization {
     public void result() {
         System.out.println("Best tour length: " + bestTourLength);
 
-        System.out.print("Path: ");
-        for(Integer i : bestTour) {
-            System.out.print(nodearray[i].getId() + " -> ");
-        }
-        System.out.println(nodearray[bestTour.get(0)].getId());
-    }
-    public List<Node> resultForTestVis() {
         List<Node> res = new ArrayList<>();
         for(Integer i : bestTour) {
             res.add(nodearray[i]);
         }
-        return res;
-    }
-    public List<Node> getNodes() {
-        return Arrays.asList(nodearray);
+
+        tv.showResult(res);
     }
 
     private Map<Node, List<DirectedEdge>> originalGraph;
@@ -199,4 +189,6 @@ public class AntColonyOptimization {
 
     double bestTourLength;
     List<Integer> bestTour;
+
+    static private TestVis tv;
 }
