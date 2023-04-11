@@ -44,22 +44,35 @@ public class TestVis {
                 "    size: 5px, 5px;\n" +
                 "    fill-color: #f7f7f0;\n" +
                 "    text-mode: normal; \n" +
-                "}");
-        graph.addNode(nodes.get(0).getId()).setAttribute("ui.label", nodes.get(0).getId());
-        graph.getNode((nodes.get(0).getId())).setAttribute("layout.frozen");
-        graph.getNode((nodes.get(0).getId())).setAttribute("xy", nodes.get(0).getLatitude(), nodes.get(0).getLongitude());;
+                "}" +
+                "edge.highlight{\n" +
+                "   fill-color: red;\n" +
+                "}"
+        );
+
+        for (Node node : nodes) {
+            graph.addNode(node.getId()).setAttribute("ui.label", node.getId());
+            graph.getNode((node.getId())).setAttribute("layout.frozen");
+            graph.getNode((node.getId())).setAttribute("xy", node.getLatitude(), node.getLongitude());
+        }
+        graph.display();
         for (int i = 1; i < nodes.size(); i++) {
             Node cur = nodes.get(i);
             Node prev = nodes.get(i - 1);
-            graph.addNode(cur.getId()).setAttribute("ui.label", cur.getId());;
-            graph.getNode((cur.getId())).setAttribute("layout.frozen");
-            graph.getNode((cur.getId())).setAttribute("xy", cur.getLatitude(), cur.getLongitude());;
-            graph.addEdge(cur.getId()+prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
+            graph.addEdge(cur.getId() + prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
+            graph.getEdge(cur.getId() + prev.getId()).addAttribute("ui.class", "highlight");
+            sleep();
         }
         Node cur = nodes.get(0);
         Node prev = nodes.get(nodes.size() - 1);
-        graph.addEdge(cur.getId()+prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
-        graph.display();
+        graph.addEdge(cur.getId() + prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
 
+    }
+
+    protected void sleep() {
+        try {
+            Thread.sleep(500);
+        } catch (Exception e) {
+        }
     }
 }
