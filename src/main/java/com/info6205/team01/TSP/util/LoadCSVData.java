@@ -20,7 +20,17 @@ public class LoadCSVData {
     public String[] indexToID;
     public Map<String, Integer> IDToIndex = new HashMap<>();
 
-    public LoadCSVData() throws Exception {
+    public static final LoadCSVData data;
+
+    static {
+        try {
+            data = new LoadCSVData();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private LoadCSVData() throws Exception {
         countLines();
         metaData = new String[length][3];
         coordination = new double[length][2];
@@ -28,6 +38,7 @@ public class LoadCSVData {
         indexToID = new String[length];
         loadData();
     }
+
 
     private void countLines() throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(path));

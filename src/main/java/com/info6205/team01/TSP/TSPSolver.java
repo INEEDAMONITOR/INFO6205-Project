@@ -15,7 +15,7 @@ public class TSPSolver {
 
     public void solve() throws Exception {
         // data transform
-        loadCSVData = new LoadCSVData();
+        loadCSVData = LoadCSVData.data;
         double[][] adjacencyMatrix = loadCSVData.adjacencyMatrix;
         double[][] cityCoordinates = loadCSVData.coordination;
         // get lower boundary

@@ -30,7 +30,7 @@ public class TestVis {
 
     public TestVis() {
         try {
-            LoadCSVData loader = new LoadCSVData();
+            LoadCSVData loader = LoadCSVData.data;
             nodes = loader.nodes;
         } catch (Exception e) {
             throw new RuntimeException(e);
