@@ -30,7 +30,7 @@ public class ThreeOpt {
         while (improvement) {
             improvement = false;
 
-            for (int i = 1; i < n - 2; i++) {
+            for (int i = 1; i < n; i++) {
                 for (int j = i + 1; j < n - 1; j++) {
                     for (int k = j + 1; k < n; k++) {
                         // evaluate all possible 3-opt swaps
@@ -40,6 +40,14 @@ public class ThreeOpt {
 
                         if (newDist < minDistance) {
                             // new tour is better, keep it
+                            gos.add(GraphOperation.removeEdge(tour.get(i-1), tour.get(i)));
+                            gos.add(GraphOperation.removeEdge(tour.get(j-1), tour.get(j)));
+                            gos.add(GraphOperation.removeEdge(tour.get(k-1), tour.get(k)));
+                            gos.add(GraphOperation.removeEdge(tour.get(n-1), tour.get(0)));
+                            gos.add(GraphOperation.addEdge(tour.get(i-1), tour.get(k)));
+                            gos.add(GraphOperation.addEdge(tour.get(n-1), tour.get(j)));
+                            gos.add(GraphOperation.addEdge(tour.get(k-1), tour.get(i)));
+                            gos.add(GraphOperation.addEdge(tour.get(j-1), tour.get(0)));
                             tour = newTour;
                             improvement = true;
                             minDistance = newDist;
@@ -52,26 +60,11 @@ public class ThreeOpt {
 
     // helper method for performing a 3-opt swap
     private List<Node> threeOptSwap(List<Node> tour, int i, int j, int k, int n) {
-        Node[] newTour = new Node[length];
-        int index = 0;
-        // take all the cities from beginning to i-1
-        for (int x = 0; x < i; x++) {
-            newTour[index++] = tour.get(x);
-        }
-        // take cities from i to j in the same order
-        for (int x = i; x <= j; x++) {
-            newTour[index++] = tour.get(x);
-        }
-        // take cities from k to n-1 in the same order
-        for (int x = k; x < n; x++) {
-            newTour[index++] = tour.get(x);
-        }
-        // take cities from j+1 to k-1 in reverse order
-        for (int x = j + 1; x < k; x++) {
-            newTour[index++] = tour.get(k + j - x);
-        }
-        List<Node> nList = new ArrayList<>(Arrays.asList(newTour));
-        return nList;
+        List<Node> newTour = new ArrayList<>(tour.subList(0, i));
+        newTour.addAll(tour.subList(k, length));
+        newTour.addAll(tour.subList(j, k));
+        newTour.addAll(tour.subList(i, j));
+        return newTour;
     }
 
     // helper method for calculating the distance of a tour
@@ -90,5 +83,9 @@ public class ThreeOpt {
         distance += distances[lastIndex][firstIndex];
 
         return distance;
+    }
+
+    public List<GraphOperation> getGos() {
+        return gos;
     }
 }

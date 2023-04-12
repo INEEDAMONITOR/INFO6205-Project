@@ -34,6 +34,7 @@ public class TSPSolver {
         visualization(loadCSVData.nodes, twoOpt.getGos(), tspNearestNeighbor.getGos(), 5);
         // optimize it using 3-opt
         ThreeOpt threeOpt = optimizeWithThreeOpt(tspNearestNeighbor.getTour());
+        visualization(loadCSVData.nodes, threeOpt.getGos(), tspNearestNeighbor.getGos(), 5);
         System.out.println("hahahah");
     }
 
