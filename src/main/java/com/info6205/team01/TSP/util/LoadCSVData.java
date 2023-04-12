@@ -12,15 +12,25 @@ public class LoadCSVData {
 
     public static final String path = "src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv";
 
-    public int length = 0;
-    public String[][] metaData;
-    public ArrayList<Node> nodes = new ArrayList<>();
-    public double[][] coordination;
-    public double[][] adjacencyMatrix;
-    public String[] indexToID;
-    public Map<String, Integer> IDToIndex = new HashMap<>();
+    public int length;
+    public final String[][] metaData;
+    public final ArrayList<Node> nodes = new ArrayList<>();
+    public final double[][] coordination;
+    public final double[][] adjacencyMatrix;
+    public final String[] indexToID;
+    public final Map<String, Integer> IDToIndex = new HashMap<>();
 
-    public LoadCSVData() throws Exception {
+    public static final LoadCSVData data;
+
+    static {
+        try {
+            data = new LoadCSVData();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private LoadCSVData() throws Exception {
         countLines();
         metaData = new String[length][3];
         coordination = new double[length][2];
@@ -29,11 +39,14 @@ public class LoadCSVData {
         loadData();
     }
 
+
     private void countLines() throws Exception {
+        int tempLength = 0;
         BufferedReader reader = new BufferedReader(new FileReader(path));
-        while (reader.readLine() != null) length++;
+        while (reader.readLine() != null) tempLength++;
         reader.close();
-        length -= 1;
+        tempLength -= 1;
+        length = tempLength;
     }
 
     public void loadData() {
