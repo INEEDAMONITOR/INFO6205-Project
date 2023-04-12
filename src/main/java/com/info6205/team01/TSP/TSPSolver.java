@@ -28,9 +28,10 @@ public class TSPSolver {
         // optimize it using 2-opt
         TwoOpt twoOpt = new TwoOpt(tspNearestNeighbor.getTour());
         twoOpt.optimize();
-        System.out.println("hahahah");
         // optimize it using 3-opt
-//        optimizeWithThreeOpt(tourNN, adjacencyMatrix);
+        ThreeOpt threeOpt = new ThreeOpt(tspNearestNeighbor.getTour());
+        threeOpt.optimize();
+        System.out.println("hahahah");
     }
 
     /*private double solveWithNearestNeighbor(List<Integer> tourNN, double[][] adjacencyMatrix) {
