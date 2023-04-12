@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlgorithmVisualization {
+    public AlgorithmVisualization(List<Node> nodes, List<GraphOperation> gos, List<GraphOperation> oldGos) {
+        this.nodes = nodes;
+        this.oldGos = oldGos;
+        this.gos = gos;
+    }
+
     public static void main(String[] args) {
         Preprocessing preprocessing = new Preprocessing();
         // Example Usage
@@ -33,6 +39,7 @@ public class AlgorithmVisualization {
 
     private List<Node> nodes;
     private List<GraphOperation> gos;
+    private List<GraphOperation> oldGos;
     private int sleepTime = 500;
 
     public void setSleepTime(int sleepTime) {
@@ -62,45 +69,55 @@ public class AlgorithmVisualization {
             graph.getNode((node.getId())).setAttribute("layout.frozen");
             graph.getNode((node.getId())).setAttribute("xy", node.getLatitude(), node.getLongitude());
         }
+        if (oldGos != null) {
+            for (GraphOperation go : oldGos) {
+                changeEdge(graph, go);
+            }
+        }
+
         graph.display();
         for (GraphOperation go : gos) {
-            switch (go.getAction()) {
-                case ADD:
-                    graph.addEdge(go.node1.getId() + go.node2.getId(), go.node1.getId(), go.node2.getId());
-                    if (go.getLayout() == GraphOperation.Layout.HIGHLIGHT) {
-                        graph.getEdge(go.node1.getId() + go.node2.getId()).setAttribute("ui.class", "highlight");
-                    }
-                    break;
-                case REMOVE:
-                    Edge edge;
-                    if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
-                        edge = graph.getEdge(go.node1.getId() + go.node2.getId());
-                    } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
-                        edge = graph.getEdge(go.node1.getId() + go.node2.getId());
-                    } else {
-                        break;
-                    }
-                    graph.removeEdge(edge);
-                    break;
-                case SETLAYOUT:
-                    Edge edge1;
-                    if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
-                        edge1 = graph.getEdge(go.node1.getId() + go.node2.getId());
-                    } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
-                        edge1 = graph.getEdge(go.node1.getId() + go.node2.getId());
-                    } else {
-                        break;
-                    }
-                    if (go.getLayout() == GraphOperation.Layout.UNHIGHLIGHT) {
-                        edge1.removeAttribute("ui.class");
-                    } else {
-                        edge1.addAttribute("ui.class", "highlight");
-                    }
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + go.getAction());
-            }
+            changeEdge(graph, go);
             sleep();
+        }
+    }
+
+    private void changeEdge(Graph graph, GraphOperation go) {
+        switch (go.getAction()) {
+            case ADD:
+                graph.addEdge(go.node1.getId() + go.node2.getId(), go.node1.getId(), go.node2.getId());
+                if (go.getLayout() == GraphOperation.Layout.HIGHLIGHT) {
+                    graph.getEdge(go.node1.getId() + go.node2.getId()).setAttribute("ui.class", "highlight");
+                }
+                break;
+            case REMOVE:
+                Edge edge;
+                if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
+                    edge = graph.getEdge(go.node1.getId() + go.node2.getId());
+                } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
+                    edge = graph.getEdge(go.node2.getId() + go.node1.getId());
+                } else {
+                    break;
+                }
+                graph.removeEdge(edge);
+                break;
+            case SETLAYOUT:
+                Edge edge1;
+                if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
+                    edge1 = graph.getEdge(go.node1.getId() + go.node2.getId());
+                } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
+                    edge1 = graph.getEdge(go.node2.getId() + go.node1.getId());
+                } else {
+                    break;
+                }
+                if (go.getLayout() == GraphOperation.Layout.UNHIGHLIGHT) {
+                    edge1.removeAttribute("ui.class");
+                } else {
+                    edge1.addAttribute("ui.class", "highlight");
+                }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + go.getAction());
         }
     }
 

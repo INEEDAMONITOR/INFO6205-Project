@@ -23,6 +23,7 @@ public class TSPNearestNeighbor {
         tour = new ArrayList<>();
         this.adjacencyMatrix = LoadCSVData.data.adjacencyMatrix;
         length = LoadCSVData.data.length;
+//        length = 15;
         visited = new HashSet<>();
         nodes = LoadCSVData.data.nodes;
     }
@@ -49,6 +50,7 @@ public class TSPNearestNeighbor {
             if (minFlag == true) {
                 visited.add(nodes.get(nearestNeighbor).getId());
                 tour.add(nodes.get(nearestNeighbor));
+                gos.add(GraphOperation.addEdge(tour.get(tour.size()-2), tour.get(tour.size()-1)));
                 minFlag = false;
                 currentPos = nearestNeighbor;
             }
@@ -56,6 +58,7 @@ public class TSPNearestNeighbor {
         }
 
         minDistance += adjacencyMatrix[currentPos][0];
+        gos.add(GraphOperation.addEdge(tour.get(tour.size()-1), tour.get(0)));
 
         System.out.println("Nearest Neighbor Heuristic Algorithm Result: ");
 //        System.out.println("Tour: " + tour);

@@ -38,6 +38,12 @@ public class TwoOpt {
 
                     if (newDist < minDistance) {
                         // new tour is better, keep it
+                        // add graph change info
+                        int secondTo = j==length-1 ? 0 : j+1;
+                        gos.add(GraphOperation.removeEdge(tour.get(i-1), tour.get(i)));
+                        gos.add(GraphOperation.removeEdge(tour.get(j), tour.get(secondTo)));
+                        gos.add(GraphOperation.addEdge(tour.get(i-1), tour.get(j)));
+                        gos.add(GraphOperation.addEdge(tour.get(i), tour.get(secondTo)));
                         tour = newTour;
                         minDistance = newDist;
                         improvement = true;
@@ -83,5 +89,9 @@ public class TwoOpt {
         distance += distances[lastIndex][firstIndex];
 
         return distance;
+    }
+
+    public List<GraphOperation> getGos() {
+        return gos;
     }
 }
