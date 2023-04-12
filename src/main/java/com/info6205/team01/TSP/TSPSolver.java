@@ -28,9 +28,10 @@ public class TSPSolver {
         // use Nearest Neighbor to solve problem
         TSPNearestNeighbor tspNearestNeighbor = new TSPNearestNeighbor();
         tspNearestNeighbor.findShortestPath();
-        visualization(loadCSVData.nodes, tspNearestNeighbor.getGos(), 20);
+        visualization(loadCSVData.nodes, tspNearestNeighbor.getGos(), null, 5);
         // optimize it using 2-opt
         TwoOpt twoOpt = optimizeWithTwoOpt(tspNearestNeighbor.getTour());
+        visualization(loadCSVData.nodes, twoOpt.getGos(), tspNearestNeighbor.getGos(), 5);
         // optimize it using 3-opt
         ThreeOpt threeOpt = optimizeWithThreeOpt(tspNearestNeighbor.getTour());
         System.out.println("hahahah");
@@ -56,10 +57,9 @@ public class TSPSolver {
         return threeOpt;
     }
 
-    private void visualization(List<Node> nodes, List<GraphOperation> gos, int interval) {
-        // Get gos
+    private void visualization(List<Node> nodes, List<GraphOperation> gos, List<GraphOperation> oldGos, int interval) {
         // Build av
-        AlgorithmVisualization av = new AlgorithmVisualization(nodes, gos);
+        AlgorithmVisualization av = new AlgorithmVisualization(nodes, gos, oldGos);
         // You can set sleep time
         // default: 500
         av.setSleepTime(interval);
