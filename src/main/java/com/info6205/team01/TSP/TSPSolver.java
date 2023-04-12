@@ -23,23 +23,25 @@ public class TSPSolver {
         double minCost = mst.minCostConnectPoints(cityCoordinates);
         System.out.println("Minimum cost: " + minCost);
         // use Nearest Neighbor to solve problem
-        List<Integer> tourNN = new ArrayList<>();
-        double distanceNN = solveWithNearestNeighbor(tourNN, adjacencyMatrix);
+        TSPNearestNeighbor tspNearestNeighbor = new TSPNearestNeighbor();
+        tspNearestNeighbor.findShortestPath();
         // optimize it using 2-opt
-        optimizeWithTwoOpt(tourNN, adjacencyMatrix);
+        TwoOpt twoOpt = new TwoOpt(tspNearestNeighbor.getTour());
+        twoOpt.optimize();
+        System.out.println("hahahah");
         // optimize it using 3-opt
-        optimizeWithThreeOpt(tourNN, adjacencyMatrix);
+//        optimizeWithThreeOpt(tourNN, adjacencyMatrix);
     }
 
-    private double solveWithNearestNeighbor(List<Integer> tourNN, double[][] adjacencyMatrix) {
+    /*private double solveWithNearestNeighbor(List<Integer> tourNN, double[][] adjacencyMatrix) {
         TSPNearestNeighbor tsp = new TSPNearestNeighbor(adjacencyMatrix);
         double distanceNN = tsp.findShortestPath(tourNN);
         System.out.println("NearestNeighbor - Tour: " + tourNN);
         System.out.println("NearestNeighbor - Shortest Distance: " + distanceNN);
         return distanceNN;
-    }
+    }*/
 
-    private void optimizeWithTwoOpt(List<Integer> tour, double[][] adjacencyMatrix) {
+    /*private void optimizeWithTwoOpt(List<Integer> tour, double[][] adjacencyMatrix) {
         int[] arr1 = tour.stream().mapToInt(i -> i).toArray();
         TwoOpt twoOpt = new TwoOpt();
         double newDistance = twoOpt.optimize(arr1, adjacencyMatrix);
@@ -50,9 +52,9 @@ public class TSPSolver {
         System.out.println();
         System.out.println("Two Opt - Shortest Distance: " + newDistance);
 
-    }
+    }*/
 
-    private void optimizeWithThreeOpt(List<Integer> tour, double[][] adjacencyMatrix) {
+    /*private void optimizeWithThreeOpt(List<Integer> tour, double[][] adjacencyMatrix) {
         int[] arr1 = tour.stream().mapToInt(i -> i).toArray();
         ThreeOpt threeOpt = new ThreeOpt();
         double newDistance = threeOpt.optimize(arr1, adjacencyMatrix);
@@ -63,7 +65,7 @@ public class TSPSolver {
         System.out.println();
         System.out.println("Three Opt - Shortest Distance: " + newDistance);
 
-    }
+    }*/
 
     public static void main(String[] args) throws Exception {
         TSPSolver tspSolver = new TSPSolver();

@@ -18,8 +18,8 @@ public class TwoOpt {
 
     public TwoOpt(List<Node> nodes) {
         tour = new ArrayList<>(nodes);
-        minDistance = calculateDistance(tour);
         length = tour.size();
+        minDistance = calculateDistance(tour);
 
     }
     public void optimize() {
