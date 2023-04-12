@@ -49,6 +49,7 @@ public class TSPNearestNeighbor {
             if (minFlag == true) {
                 visited.add(nodes.get(nearestNeighbor).getId());
                 tour.add(nodes.get(nearestNeighbor));
+                gos.add(GraphOperation.addEdge(tour.get(tour.size()-2), tour.get(tour.size()-1)));
                 minFlag = false;
                 currentPos = nearestNeighbor;
             }
