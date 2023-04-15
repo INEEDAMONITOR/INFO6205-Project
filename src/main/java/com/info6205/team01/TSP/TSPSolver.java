@@ -54,7 +54,7 @@ public class TSPSolver {
     }
 
     private ThreeOpt optimizeWithThreeOpt(List<Node> tour) {
-        ThreeOpt threeOpt = new ThreeOpt(tour);
+        ThreeOpt threeOpt = new ThreeOpt(tour, LoadCSVData.data);
         threeOpt.optimize();
         return threeOpt;
     }
