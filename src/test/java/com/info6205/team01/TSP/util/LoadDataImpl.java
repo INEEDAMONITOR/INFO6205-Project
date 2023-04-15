@@ -6,23 +6,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-public class LoadCSVData extends LoadData{
+public class LoadDataImpl extends LoadData {
 
-    public static final String path = "src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv";
 
-    public static final LoadData data;
 
-    static {
-        try {
-            data = new LoadCSVData();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private LoadCSVData() throws Exception {
+    public LoadDataImpl(String path) throws Exception {
+        this.path = path;
         countLines();
         metaData = new String[length][3];
         coordination = new double[length][2];
@@ -92,7 +86,8 @@ public class LoadCSVData extends LoadData{
     }
 
     public static void main(String[] args) throws Exception {
-        LoadCSVData loadCSVData = new LoadCSVData();
+        LoadDataImpl loadCSVData = new LoadDataImpl("src/test/java/com/info6205/team01/TSP/resources/testData5.csv");
         System.out.println(loadCSVData.length);
     }
+
 }

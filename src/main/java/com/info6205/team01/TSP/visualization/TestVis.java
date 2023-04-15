@@ -5,6 +5,7 @@ import com.info6205.team01.TSP.Graph.UndirectedEdge;
 import com.info6205.team01.TSP.tactical.AntColonyOptimization;
 import com.info6205.team01.TSP.tactical.GreedyHeuristic;
 import com.info6205.team01.TSP.util.LoadCSVData;
+import com.info6205.team01.TSP.util.LoadData;
 import com.info6205.team01.TSP.util.Preprocessing;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -30,7 +31,7 @@ public class TestVis {
 
     public TestVis() {
         try {
-            LoadCSVData loader = LoadCSVData.data;
+            LoadData loader = LoadCSVData.data;
             nodes = loader.nodes;
         } catch (Exception e) {
             throw new RuntimeException(e);

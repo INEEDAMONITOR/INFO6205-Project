@@ -2,6 +2,7 @@ package com.info6205.team01.TSP.tactical;
 
 import com.info6205.team01.TSP.Graph.Node;
 import com.info6205.team01.TSP.util.LoadCSVData;
+import com.info6205.team01.TSP.util.LoadData;
 import com.info6205.team01.TSP.visualization.GraphOperation;
 
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ public class TSPNearestNeighbor {
     private double minDistance = 0;
     List<GraphOperation> gos = new ArrayList<>();
 
-    public TSPNearestNeighbor() {
+    public TSPNearestNeighbor(LoadData loadData) {
         tour = new ArrayList<>();
-        this.adjacencyMatrix = LoadCSVData.data.adjacencyMatrix;
-        length = LoadCSVData.data.length;
+        this.adjacencyMatrix = loadData.adjacencyMatrix;
+        length = loadData.length;
 //        length = 15;
         visited = new HashSet<>();
-        nodes = LoadCSVData.data.nodes;
+        nodes = loadData.nodes;
     }
 
     public void findShortestPath() {
