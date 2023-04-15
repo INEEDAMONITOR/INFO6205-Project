@@ -17,6 +17,8 @@ public class Tools {
     public static void main(String[] args) {
         // Boston to New York: 300km
         System.out.println(distance(42.361145, -71.057083, 40.730610, -73.935242));
+        System.out.println(distance(51.515192, -0.016542, 51.495871, -0.184411));
+        System.out.println(distance(51.515192, -0.016542, 51.415897, -0.098618));
     }
 
 }

@@ -5,6 +5,7 @@ import com.info6205.team01.TSP.strategic.ThreeOpt;
 import com.info6205.team01.TSP.strategic.TwoOpt;
 import com.info6205.team01.TSP.tactical.TSPNearestNeighbor;
 import com.info6205.team01.TSP.util.LoadCSVData;
+import com.info6205.team01.TSP.util.LoadData;
 import com.info6205.team01.TSP.util.MST;
 import com.info6205.team01.TSP.visualization.AlgorithmVisualization;
 import com.info6205.team01.TSP.visualization.GraphOperation;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class TSPSolver {
 
-    LoadCSVData loadCSVData;
+    LoadData loadCSVData;
 
     public void solve() throws Exception {
         // data transform
@@ -26,7 +27,7 @@ public class TSPSolver {
         double minCost = mst.minCostConnectPoints(cityCoordinates);
         System.out.println("Minimum cost: " + minCost);
         // use Nearest Neighbor to solve problem
-        TSPNearestNeighbor tspNearestNeighbor = new TSPNearestNeighbor();
+        TSPNearestNeighbor tspNearestNeighbor = new TSPNearestNeighbor(loadCSVData);
         tspNearestNeighbor.findShortestPath();
         visualization(loadCSVData.nodes, tspNearestNeighbor.getGos(), null, 5);
         // optimize it using 2-opt
@@ -34,6 +35,7 @@ public class TSPSolver {
         visualization(loadCSVData.nodes, twoOpt.getGos(), tspNearestNeighbor.getGos(), 5);
         // optimize it using 3-opt
         ThreeOpt threeOpt = optimizeWithThreeOpt(tspNearestNeighbor.getTour());
+        visualization(loadCSVData.nodes, threeOpt.getGos(), tspNearestNeighbor.getGos(), 5);
         System.out.println("hahahah");
     }
 
