@@ -2,12 +2,10 @@ package com.info6205.team01.TSP.strategic;
 
 import com.info6205.team01.TSP.Graph.Node;
 import com.info6205.team01.TSP.util.LoadCSVData;
+import com.info6205.team01.TSP.util.LoadData;
 import com.info6205.team01.TSP.visualization.GraphOperation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TwoOpt {
 
@@ -15,8 +13,10 @@ public class TwoOpt {
     int length;
     List<GraphOperation> gos = new ArrayList<>();
     double minDistance = 0;
+    LoadData loadData;
 
-    public TwoOpt(List<Node> nodes) {
+    public TwoOpt(List<Node> nodes, LoadData loadData) {
+        this.loadData = loadData;
         tour = new ArrayList<>(nodes);
         length = tour.size();
         minDistance = calculateDistance(tour);
@@ -75,8 +75,8 @@ public class TwoOpt {
 
     // helper method for calculating the distance of a tour
     private double calculateDistance(List<Node> tour) {
-        Map<String, Integer> IDToIndex = LoadCSVData.data.IDToIndex;
-        double[][] distances = LoadCSVData.data.adjacencyMatrix;
+        Map<String, Integer> IDToIndex = loadData.IDToIndex;
+        double[][] distances = loadData.adjacencyMatrix;
 
         double distance = 0;
         for (int i = 0; i < length - 1; i++) {
@@ -93,5 +93,9 @@ public class TwoOpt {
 
     public List<GraphOperation> getGos() {
         return gos;
+    }
+
+    public List<Node> getTour() {
+        return tour;
     }
 }

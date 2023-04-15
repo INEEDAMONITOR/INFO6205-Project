@@ -48,7 +48,7 @@ public class TSPSolver {
     }*/
 
     private TwoOpt optimizeWithTwoOpt(List<Node> tour) {
-        TwoOpt twoOpt = new TwoOpt(tour);
+        TwoOpt twoOpt = new TwoOpt(tour, LoadCSVData.data);
         twoOpt.optimize();
         return twoOpt;
     }
