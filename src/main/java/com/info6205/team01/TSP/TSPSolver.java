@@ -48,13 +48,13 @@ public class TSPSolver {
     }*/
 
     private TwoOpt optimizeWithTwoOpt(List<Node> tour) {
-        TwoOpt twoOpt = new TwoOpt(tour);
+        TwoOpt twoOpt = new TwoOpt(tour, LoadCSVData.data);
         twoOpt.optimize();
         return twoOpt;
     }
 
     private ThreeOpt optimizeWithThreeOpt(List<Node> tour) {
-        ThreeOpt threeOpt = new ThreeOpt(tour);
+        ThreeOpt threeOpt = new ThreeOpt(tour, LoadCSVData.data);
         threeOpt.optimize();
         return threeOpt;
     }
