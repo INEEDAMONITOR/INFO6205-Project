@@ -38,10 +38,11 @@ public class TestVis {
     }
 
     public void showResult(List<Node> nodes) {
+
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = new SingleGraph("Tutorial 1");
         graph.setAttribute("ui.stylesheet", "node{\n" +
-                "    size: 30px, 30px;\n" +
+                "    size: 5px, 5px;\n" +
                 "    fill-color: #f7f7f0;\n" +
                 "    text-mode: normal; \n" +
                 "}" +
@@ -61,7 +62,7 @@ public class TestVis {
             Node prev = nodes.get(i - 1);
             graph.addEdge(cur.getId() + prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
             graph.getEdge(cur.getId() + prev.getId()).addAttribute("ui.class", "highlight");
-            sleep();
+//            sleep();
         }
         Node cur = nodes.get(0);
         Node prev = nodes.get(nodes.size() - 1);

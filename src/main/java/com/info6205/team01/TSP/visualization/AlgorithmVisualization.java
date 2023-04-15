@@ -61,6 +61,7 @@ public class AlgorithmVisualization {
                 "}" +
                 "edge.highlight{\n" +
                 "   fill-color: red;\n" +
+                "   size: 2.5px, 2.5px;" +
                 "}"
         );
         // Add all the nodes
@@ -80,26 +81,34 @@ public class AlgorithmVisualization {
             changeEdge(graph, go);
             sleep();
         }
+        System.out.println("Done");
     }
 
     private void changeEdge(Graph graph, GraphOperation go) {
         switch (go.getAction()) {
             case ADD:
-                graph.addEdge(go.node1.getId() + go.node2.getId(), go.node1.getId(), go.node2.getId());
-                if (go.getLayout() == GraphOperation.Layout.HIGHLIGHT) {
-                    graph.getEdge(go.node1.getId() + go.node2.getId()).setAttribute("ui.class", "highlight");
+                Edge e = graph.getEdge(go.node1.getId() + go.node2.getId()) == null ? graph.getEdge(go.node2.getId() + go.node1.getId()) : graph.getEdge(go.node1.getId() + go.node2.getId());
+                if (e == null) {
+                    graph.addEdge(go.node1.getId() + go.node2.getId(), go.node1.getId(), go.node2.getId());
+                    if (go.getLayout() == GraphOperation.Layout.HIGHLIGHT) {
+                        graph.getEdge(go.node1.getId() + go.node2.getId()).setAttribute("ui.class", "highlight");
+                    }
                 }
+
                 break;
             case REMOVE:
-                Edge edge;
-                if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
-                    edge = graph.getEdge(go.node1.getId() + go.node2.getId());
-                } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
-                    edge = graph.getEdge(go.node2.getId() + go.node1.getId());
-                } else {
-                    break;
+                Edge edge = graph.getEdge(go.node1.getId() + go.node2.getId()) == null ? graph.getEdge(go.node2.getId() + go.node1.getId()) : graph.getEdge(go.node1.getId() + go.node2.getId());
+                if (edge != null) {
+                    graph.removeEdge((org.graphstream.graph.Node) graph.getNode(go.node1.getId()), graph.getNode(go.node2.getId()));
                 }
-                graph.removeEdge(edge);
+//                if (graph.getEdge(go.node1.getId() + go.node2.getId()) != null) {
+//                    edge = graph.getEdge(go.node1.getId() + go.node2.getId());
+//                } else if (graph.getEdge(go.node2.getId() + go.node1.getId()) != null) {
+//                    edge = graph.getEdge(go.node2.getId() + go.node1.getId());
+//                } else {
+//                    break;
+//                }
+//                graph.removeEdge(edge);
                 break;
             case SETLAYOUT:
                 Edge edge1;
