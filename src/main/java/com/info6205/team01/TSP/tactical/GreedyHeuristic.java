@@ -194,7 +194,6 @@ public class GreedyHeuristic {
             for (int i = 0; i < edges.size(); i++) {
                 Node next = edges.get(i).containsNodes(cur);
                 if (next != null && !visited.contains(next)) {
-                    System.out.println(next);
                     cur = next;
                     visited.add(cur);
                     res.add(next);
@@ -202,10 +201,10 @@ public class GreedyHeuristic {
                     continue;
                 }
             }
-            System.out.println(edges.size());
         }
         return res;
     }
+
     public List<GraphOperation> getGos() {
         return gos;
     }
