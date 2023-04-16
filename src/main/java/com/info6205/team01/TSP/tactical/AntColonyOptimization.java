@@ -16,12 +16,10 @@ public class AntColonyOptimization {
 //        nodes.add(new Node("4", -0.3050444, 51.3938231));
 //        nodes.add(new Node("5", 0.05328, 51.604349));
 
-//        Preprocessing preprocessing = new Preprocessing();
-//        List<Node> nodes = preprocessing.getNodes().subList(0, 15);
-
+        /* --------------------------------------------------------------------- */
         // Initialize variables for ACO
         tv = new TestVis();
-        List<Node> nodes = tv.nodes.subList(0, 100);
+        List<Node> nodes = tv.nodes.subList(0, 150);
         AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
 
         aco.run();

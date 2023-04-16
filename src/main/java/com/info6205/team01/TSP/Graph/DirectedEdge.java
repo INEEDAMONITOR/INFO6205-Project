@@ -54,7 +54,7 @@ public class DirectedEdge {
                 '}';
     }
 
-    public UndirectedEdge toUndirectedEdger() {
+    public UndirectedEdge toUndirectedEdge() {
         return new UndirectedEdge(this.from, this.to);
     }
 }
