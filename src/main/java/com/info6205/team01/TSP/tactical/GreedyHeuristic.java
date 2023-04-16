@@ -229,6 +229,16 @@ public class GreedyHeuristic {
         return edges;
     }
 
+    public double getMinDistance() {
+        List<Node> nodes = this.getTour();
+        int min = 0;
+        min += Node.getDistance(nodes.get(0), nodes.get(nodes.size() - 1));
+        for (int i = 1; i < nodes.size(); i++) {
+            min += Node.getDistance(nodes.get(i - 1), nodes.get(i));
+        }
+        return min;
+    }
+
     List<Node> nodes;
     List<Node> tour;
     List<UndirectedEdge> edges;

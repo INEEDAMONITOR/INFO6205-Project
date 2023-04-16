@@ -25,6 +25,7 @@ public class AntColonyOptimization {
         ca.run();
         List<Node> christofidesGraph = ca.getTour();
 
+
         // AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
         AntColonyOptimization aco = new AntColonyOptimization(christofidesGraph, 10, 100, 0,1, 5);
 
