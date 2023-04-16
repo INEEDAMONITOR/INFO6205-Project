@@ -1,68 +1,30 @@
 package com.info6205.team01.TSP.tactical;
 
 import java.util.*;
-import java.math.*;
 
 import com.info6205.team01.TSP.Graph.UndirectedEdge;
 import com.info6205.team01.TSP.Graph.DirectedEdge;
 import com.info6205.team01.TSP.Graph.Node;
 import com.info6205.team01.TSP.util.*;
+import com.info6205.team01.TSP.visualization.GraphOperation;
 import com.info6205.team01.TSP.visualization.TestVis;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
-import javax.sound.midi.SysexMessage;
-
 public class ChristofidesAlgorithm {
     public static void main(String[] args) {
-//        List<Node> nodes = new ArrayList<>();
-//        nodes.add(new Node("1", -0.172148, 51.479017));
-//        nodes.add(new Node("2", -0.0844192, 51.5682443));
-//        nodes.add(new Node("3", 0.0224653, 51.5338612));
-//        nodes.add(new Node("4", -0.3050444, 51.3938231));
-//        nodes.add(new Node("5", 0.05328, 51.604349));
-
-        /* --------------------------------------------------------------------- */
         // Build original graph with directed edges
-        tv = new TestVis();
+        TestVis tv = new TestVis();
         List<Node> nodes = tv.nodes.subList(0, 150);
         ChristofidesAlgorithm ca = new ChristofidesAlgorithm(nodes);
 
-        // Build MST with Prim Algorithm;
-        Map<Node, List<DirectedEdge>> mst = ca.Prim();
-        // ca.vistualize(mst);
+        ca.run();
 
-        // Construct subgraph with "odd-degree nodes" in MST
-        Map<Node, List<DirectedEdge>> oddDegreeSubgraph = ca.oddDegreeSubgraph(mst);
-        // ca.vistualize(oddDegreeSubgraph);
-
-        // Minimum-Weighted Match for odd-degree subgraph with Blossom Algorithm
-        Map<Node, Node> matches = ca.minimumWeightedMatch(oddDegreeSubgraph);
-
-        // Combine MST and minimum-weighted matching to a multigraph
-        Map<Node, List<DirectedEdge>> multiGraph = ca.combine(mst, matches);
-        // ca.vistualize(multiGraph);
-
-        // Find Eulerian Circuit in multiGraph
-        List<Node> eulerianCircuit = ca.findEulerianCircuit(multiGraph);
-
-        // Convert Eulerian Circuit to Hamiltonian Circuits
-        List<Node> hamiltonianCircuit = ca.convertHamiltonianCircuit(eulerianCircuit);
-
-        // Sum up the weight of Hamiltonian Circuit;
-        double sum = 0.0;
-        if(hamiltonianCircuit != null) {
-            for(int i = 1; i < hamiltonianCircuit.size(); i++) {
-                Node from = hamiltonianCircuit.get(i - 1), to = hamiltonianCircuit.get(i);
-                DirectedEdge e = new DirectedEdge(from, to);
-                sum += e.getWeight();
-            }
-            System.out.println("Best tour length: " + sum);
-        }
-        else System.out.println("Hamiltonian Circult is NULL!");
+        List<Node> hamiltonianCircuit = ca.getHamiltonianCircuit();
 
         // Output graph of Hamiltonian Circuit
-        if(hamiltonianCircuit != null) tv.showResult(hamiltonianCircuit.subList(0, hamiltonianCircuit.size() - 1));
+        if(hamiltonianCircuit != null)
+            tv.showResult(hamiltonianCircuit.subList(0, hamiltonianCircuit.size() - 1));
     }
 
     public ChristofidesAlgorithm(List<Node> nodes) {
@@ -78,9 +40,11 @@ public class ChristofidesAlgorithm {
 
         // Create Whole Graph with all nodes
         this.originalGraph = buildGraph();
+
+        gos = new ArrayList<>();
     }
 
-    public Map<Node, List<DirectedEdge>> buildGraph() {
+    private Map<Node, List<DirectedEdge>> buildGraph() {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
         for(int i = 0; i < N; i++) {
             Node node1 = nodearray[i];
@@ -101,7 +65,46 @@ public class ChristofidesAlgorithm {
         return graph;
     }
 
-    public Map<Node, List<DirectedEdge>> Prim() {
+    public void run() {
+        // Build MST with Prim Algorithm;
+        Map<Node, List<DirectedEdge>> mst = Prim();
+        if(mst == null) {
+            System.out.println("MST is invalid");
+            return;
+        }
+        // vistualize(mst);
+
+        // Construct subgraph with "odd-degree nodes" in MST
+        Map<Node, List<DirectedEdge>> oddDegreeSubgraph = oddDegreeSubgraph(mst);
+        // vistualize(oddDegreeSubgraph);
+
+        // Minimum-Weighted Match for odd-degree subgraph with Blossom Algorithm
+        Map<Node, Node> matches = minimumWeightedMatch(oddDegreeSubgraph);
+
+        // Combine MST and minimum-weighted matching to a multigraph
+        Map<Node, List<DirectedEdge>> multiGraph = combine(mst, matches);
+        // vistualize(multiGraph);
+
+        // Find Eulerian Circuit in multiGraph
+        List<Node> eulerianCircuit = findEulerianCircuit(multiGraph);
+
+        // Convert Eulerian Circuit to Hamiltonian Circuits
+        this.hamiltonianCircuit = convertHamiltonianCircuit(eulerianCircuit);
+
+        // Path length of Hamiltonian Circuit;
+        double sum = 0.0;
+        if(hamiltonianCircuit != null) {
+            for(int i = 1; i < hamiltonianCircuit.size(); i++) {
+                Node from = hamiltonianCircuit.get(i - 1), to = hamiltonianCircuit.get(i);
+                DirectedEdge e = new DirectedEdge(from, to);
+                sum += e.getWeight();
+            }
+            System.out.println("Best tour length: " + sum);
+        }
+        else System.out.println("Hamiltonian Circult is NULL!");
+    }
+
+    private Map<Node, List<DirectedEdge>> Prim() {
         double[] dist = new double[N];
         Arrays.fill(dist, Double.POSITIVE_INFINITY);
 
@@ -142,13 +145,13 @@ public class ChristofidesAlgorithm {
         }
 
         // Validate MST
-//        MSTValidation valid = new MSTValidation(originalGraph, mst);
-//        if(valid.validateMST()) System.out.println("MST is valid");
-        return mst;
+        MSTValidation valid = new MSTValidation(originalGraph, mst);
+        if(valid.validateMST()) return mst;
+        return null;
     }
 
     // Construct Subgraph with "odd-degrees nodes" in MST
-    public Map<Node, List<DirectedEdge>> oddDegreeSubgraph(Map<Node, List<DirectedEdge>> MST) {
+    private Map<Node, List<DirectedEdge>> oddDegreeSubgraph(Map<Node, List<DirectedEdge>> MST) {
         // find all "odd-degree nodes" in MST
         Set<Node> oddNodes = new HashSet<>();
         for(Node node : MST.keySet()) {
@@ -171,7 +174,7 @@ public class ChristofidesAlgorithm {
     }
 
     // Construct Minimum Weighted Perfect Matching;
-    public Map<Node, Node> minimumWeightedMatch(Map<Node, List<DirectedEdge>> graph) {
+    private Map<Node, Node> minimumWeightedMatch(Map<Node, List<DirectedEdge>> graph) {
         MinimumWeightMatch mwm = new MinimumWeightMatch(graph);
         Map<Node, Node> matches = mwm.getMatches();
         return matches;
@@ -198,7 +201,7 @@ public class ChristofidesAlgorithm {
     }
 
     // Form Eulerian Circuit
-    public List<Node> findEulerianCircuit(Map<Node, List<DirectedEdge>> multiGraph) {
+    private List<Node> findEulerianCircuit(Map<Node, List<DirectedEdge>> multiGraph) {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
 
         // Must use deep copy
@@ -215,7 +218,7 @@ public class ChristofidesAlgorithm {
     }
 
     // Convert Eulerian Circuit to Hamiltonian Circuit
-    public List<Node> convertHamiltonianCircuit(List<Node> eulerianCircuit) {
+    private List<Node> convertHamiltonianCircuit(List<Node> eulerianCircuit) {
         if(eulerianCircuit == null) return null;
 
         HamiltonianCircuit hc = new HamiltonianCircuit(eulerianCircuit);
@@ -224,7 +227,7 @@ public class ChristofidesAlgorithm {
     }
 
     // Visualize
-    public void vistualize(Map<Node, List<DirectedEdge>> g) {
+    private void vistualize(Map<Node, List<DirectedEdge>> g) {
         List<UndirectedEdge> ue = new ArrayList<>();
         for(List<DirectedEdge> list : g.values()) {
             for(DirectedEdge de : list) {
@@ -259,11 +262,22 @@ public class ChristofidesAlgorithm {
         graph.display();
     }
 
+    public List<Node> getTour() {
+        int n = this.hamiltonianCircuit.size();
+        return this.hamiltonianCircuit.subList(0, n - 1);
+    }
+
+    public List<Node> getHamiltonianCircuit() {
+        return this.hamiltonianCircuit;
+    }
+
+
     private Map<Node, List<DirectedEdge>> originalGraph;
     private Map<Node, Integer> nodeToIndex;
     private Node[] nodearray;
     private double[][] costMatrix;
     private int N;
+    private List<Node> hamiltonianCircuit;
 
-    static private TestVis tv;
+    private List<GraphOperation> gos;
 }
