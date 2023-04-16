@@ -9,25 +9,29 @@ import com.info6205.team01.TSP.visualization.TestVis;
 
 public class AntColonyOptimization {
     public static void main(String[] args) {
-        List<Node> nodes = new ArrayList<>();
-        nodes.add(new Node("1", -0.172148, 51.479017));
-        nodes.add(new Node("2", -0.0844192, 51.5682443));
-        nodes.add(new Node("3", 0.0224653, 51.5338612));
-        nodes.add(new Node("4", -0.3050444, 51.3938231));
-        nodes.add(new Node("5", 0.05328, 51.604349));
+//        List<Node> nodes = new ArrayList<>();
+//        nodes.add(new Node("1", -0.172148, 51.479017));
+//        nodes.add(new Node("2", -0.0844192, 51.5682443));
+//        nodes.add(new Node("3", 0.0224653, 51.5338612));
+//        nodes.add(new Node("4", -0.3050444, 51.3938231));
+//        nodes.add(new Node("5", 0.05328, 51.604349));
 
-//        Preprocessing preprocessing = new Preprocessing();
-//        List<Node> nodes = preprocessing.getNodes().subList(0, 7);
-
+        /* --------------------------------------------------------------------- */
         // Initialize variables for ACO
-        TestVis tv = new TestVis();
+        tv = new TestVis();
+        List<Node> nodes = tv.nodes.subList(0, 10);
 
-        AntColonyOptimization aco = new AntColonyOptimization(tv.nodes.subList(0, 100), 10, 100, 0, 1, 5);
+        ChristofidesAlgorithm ca = new ChristofidesAlgorithm(nodes);
+        ca.run();
+        List<Node> christofidesGraph = ca.getTour();
+
+
+        // AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
+        AntColonyOptimization aco = new AntColonyOptimization(christofidesGraph, 10, 100, 0,1, 5);
 
         aco.run();
-
         aco.result();
-
+        tv.showResult(aco.getTour());
         tv.showResult((aco.resultForTestVis()));
     }
 
@@ -48,16 +52,6 @@ public class AntColonyOptimization {
             nodeToIndex.put(node, i++);
         }
 
-        // Cost Matrix
-//        this.costMatrix = new double[N][N];
-//        for(int j = 0; j < N; j++) {
-//            for(int k = 0; k < N; k++) {
-//                Node node1 = nodearray[j], node2 = nodearray[k];
-//                DirectedEdge e = new DirectedEdge(node1, node2);
-//                costMatrix[j][k] = e.getWeight();
-//            }
-//        }
-
         // Initialize Pheromone Matrix;
         this.pheromoneMatrix = new double[N][N];
         for (int r = 0; r < N; r++) {
@@ -67,11 +61,22 @@ public class AntColonyOptimization {
         }
 
         // Create Whole Graph & costMatrix with all nodes
+//        this.costMatrix = new double[N][N];
+//        this.originalGraph = buildGraph();
+
+        double INF = Double.POSITIVE_INFINITY / 2;
         this.costMatrix = new double[N][N];
-        this.originalGraph = buildGraph();
+        for(int k = 0; k < N; k++) {
+            Arrays.fill(costMatrix[k], INF);
+        }
+        for(int k = 1; k < N; k++) {
+            costMatrix[k - 1][k] = new DirectedEdge(nodes.get(k - 1), nodes.get(k)).getWeight();
+            costMatrix[k][k - 1] = costMatrix[k - 1][k];
+        }
+        costMatrix[0][N - 1] = costMatrix[N - 1][0] = new DirectedEdge(nodes.get(0), nodes.get(N - 1)).getWeight();
     }
 
-    public Map<Node, List<DirectedEdge>> buildGraph() {
+    private Map<Node, List<DirectedEdge>> buildGraph() {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
         for (int i = 0; i < N; i++) {
             Node node1 = nodearray[i];
@@ -92,6 +97,7 @@ public class AntColonyOptimization {
         return graph;
     }
 
+    // Execute ACO
     public void run() {
         for (int i = 0; i < iterations; i++) {
             List<List<Integer>> tours = new ArrayList<>();
@@ -104,7 +110,7 @@ public class AntColonyOptimization {
         }
     }
 
-    public List<Integer> buildTour() {
+    private List<Integer> buildTour() {
         List<Integer> tour = new ArrayList<>();
         Set<Integer> unvisited = new HashSet<>();
 
@@ -123,7 +129,7 @@ public class AntColonyOptimization {
         return tour;
     }
 
-    public int getNextCity(int cur, Set<Integer> unvisited) {
+    private int getNextCity(int cur, Set<Integer> unvisited) {
         double sum = 0.0;
         for (Integer city : unvisited) {
             sum += Math.pow(pheromoneMatrix[cur][city], alpha) * Math.pow(1.0 / costMatrix[cur][city], beta);
@@ -134,10 +140,11 @@ public class AntColonyOptimization {
             wheelPosition += Math.pow(pheromoneMatrix[cur][city], alpha) * Math.pow(1.0 / costMatrix[cur][city], beta);
             if (rouletteWheel <= wheelPosition) return city;
         }
+
         return -1;
     }
 
-    public void updataBestTour(List<Integer> tour) {
+    private void updataBestTour(List<Integer> tour) {
         double len = getTourLength(tour);
         if (len < bestTourLength) {
             bestTourLength = len;
@@ -145,7 +152,7 @@ public class AntColonyOptimization {
         }
     }
 
-    public void updatePheromoneMatrix(List<List<Integer>> tours) {
+    private void updatePheromoneMatrix(List<List<Integer>> tours) {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 double totalPheromoneDeposit = 0.0;
@@ -176,23 +183,25 @@ public class AntColonyOptimization {
 
     public void result() {
         System.out.println("Best tour length: " + bestTourLength);
-
-        for (Integer i : bestTour) {
-            System.out.print(nodearray[i].getId() + " -> ");
-        }
-        System.out.print(nodearray[bestTour.get(0)].getId());
     }
 
     public List<Node> resultForTestVis() {
-        List<Node> res = new ArrayList<>();
-        for (Integer i : bestTour) {
-            res.add(nodearray[i]);
-        }
-        return res;
+
+        tv.showResult(getTour());
+
+        return getTour();
     }
 
     public List<Node> getNodes() {
         return Arrays.asList(nodearray);
+    }
+
+    public List<Node> getTour() {
+        List<Node> tour = new ArrayList<>();
+        for(int i = 0; i < bestTour.size(); i++) {
+            tour.add(nodearray[bestTour.get(i)]);
+        }
+        return tour;
     }
 
     private Map<Node, List<DirectedEdge>> originalGraph;
@@ -209,4 +218,6 @@ public class AntColonyOptimization {
 
     double bestTourLength;
     List<Integer> bestTour;
+
+    private static TestVis tv;
 }

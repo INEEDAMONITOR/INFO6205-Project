@@ -11,6 +11,12 @@ public class DirectedEdge {
         this.weight = Node.getDistance(from, to);
     }
 
+    public DirectedEdge(Node from, Node to, double w) {
+        this.from = from;
+        this.to = to;
+        this.weight = w;
+    }
+
     public DirectedEdge(DirectedEdge rhs) {
         this(rhs.getFrom(), rhs.getTo());
     }
@@ -46,5 +52,9 @@ public class DirectedEdge {
                 "From=" + from.getId() +
                 ", To=" + to.getId() +
                 '}';
+    }
+
+    public UndirectedEdge toUndirectedEdge() {
+        return new UndirectedEdge(this.from, this.to);
     }
 }

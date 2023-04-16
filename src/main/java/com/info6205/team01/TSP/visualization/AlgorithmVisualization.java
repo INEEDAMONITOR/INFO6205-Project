@@ -42,7 +42,7 @@ public class AlgorithmVisualization {
         AlgorithmVisualization av = new AlgorithmVisualization(nodeList, rs.getGos(), tourGos);
         // You can set sleep time
         // default: 500
-        av.setSleepTime(100);
+        av.setSleepTime(50);
         av.showResult();
     }
 
