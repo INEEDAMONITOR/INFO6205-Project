@@ -1,8 +1,9 @@
 package com.info6205.team01.TSP.visualization;
 
 import com.info6205.team01.TSP.Graph.Node;
+import com.info6205.team01.TSP.strategic.RandomSwapping;
+import com.info6205.team01.TSP.tactical.AntColonyOptimization;
 import com.info6205.team01.TSP.tactical.GreedyHeuristic;
-import com.info6205.team01.TSP.util.LoadCSVData;
 import com.info6205.team01.TSP.util.Preprocessing;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -24,13 +25,21 @@ public class AlgorithmVisualization {
         List<Node> nodeList = preprocessing.getNodes();
 
         // Run your algorithn
-        GreedyHeuristic gh = new GreedyHeuristic(nodeList);
-        gh.getMinNodes();
+        AntColonyOptimization aco = new AntColonyOptimization(nodeList, 10, 100, 0, 1, 5);
+        aco.run();
+        aco.result();
+        List<Node> antRes = aco.resultForTestVis();
 
+        List<GraphOperation> tourGos = new ArrayList<>();
+        for (int i = 1; i < antRes.size(); i++) {
+            tourGos.add(GraphOperation.addEdge(antRes.get(i - 1), antRes.get(i)));
+        }
+
+
+        RandomSwapping rs = new RandomSwapping(antRes);
         // Get gos
-        List<GraphOperation> graphOperationList = gh.getGos();
         // Build av
-        AlgorithmVisualization av = new AlgorithmVisualization(nodeList, graphOperationList);
+        AlgorithmVisualization av = new AlgorithmVisualization(nodeList, rs.getGos(), tourGos);
         // You can set sleep time
         // default: 500
         av.setSleepTime(100);
