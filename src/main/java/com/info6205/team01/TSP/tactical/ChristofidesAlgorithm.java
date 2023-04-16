@@ -141,10 +141,9 @@ public class ChristofidesAlgorithm {
             );
         }
 
-//        // Validate MST
+        // Validate MST
 //        MSTValidation valid = new MSTValidation(originalGraph, mst);
 //        if(valid.validateMST()) System.out.println("MST is valid");
-
         return mst;
     }
 

@@ -18,25 +18,15 @@ public class AntColonyOptimization {
 
         /* --------------------------------------------------------------------- */
         // Initialize variables for ACO
-<<<<<<< HEAD
         tv = new TestVis();
         List<Node> nodes = tv.nodes.subList(0, 150);
         AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
 
         aco.run();
 
-        aco.result();
-=======
-        TestVis tv = new TestVis();
-
-        AntColonyOptimization aco = new AntColonyOptimization(tv.nodes.subList(0, 100), 10, 100, 0, 1, 5);
-
-        aco.run();
-
-//        aco.result();
+        // aco.result();
 
         tv.showResult((aco.resultForTestVis()));
->>>>>>> main
     }
 
     public AntColonyOptimization(List<Node> nodes, int ants, int iterations, double evapRate, int alpha, int beta) {
@@ -177,8 +167,6 @@ public class AntColonyOptimization {
     public void result() {
         System.out.println("Best tour length: " + bestTourLength);
 
-<<<<<<< HEAD
-=======
         for (Integer i : bestTour) {
             System.out.print(nodearray[i].getId() + " -> ");
         }
@@ -186,21 +174,21 @@ public class AntColonyOptimization {
     }
 
     public List<Node> resultForTestVis() {
->>>>>>> main
+
         List<Node> res = new ArrayList<>();
         for (Integer i : bestTour) {
             res.add(nodearray[i]);
         }
-<<<<<<< HEAD
+
 
         tv.showResult(res);
-=======
+
         return res;
     }
 
     public List<Node> getNodes() {
         return Arrays.asList(nodearray);
->>>>>>> main
+
     }
 
     private Map<Node, List<DirectedEdge>> originalGraph;
