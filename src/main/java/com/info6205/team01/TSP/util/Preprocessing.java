@@ -35,8 +35,6 @@ public class Preprocessing {
             nodes.add(new Node(line[0].substring(line[0].length() - 5), Double.parseDouble(line[1]), Double.parseDouble(line[2])));
         }
         sc.close();  //closes the scanner
-
-
 //    //parsing a CSV file into Scanner class constructor
 //        Scanner sc = new Scanner("/Users/yuxichen/Documents/NEU Obsidian/NEU/Graduate/2023 Spring/INFO6205 Program Structure & Algorithms 39568/TSP/INFO6205-Project/src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv");
 //        sc.useDelimiter(",");   //sets the delimiter pattern

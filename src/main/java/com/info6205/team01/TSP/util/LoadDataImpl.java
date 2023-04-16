@@ -23,6 +23,7 @@ public class LoadDataImpl extends LoadData {
 
     public LoadDataImpl() throws Exception {
         this("src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv");
+//        this("src/main/java/com/info6205/team01/TSP/resources/info6205.spring2023.teamproject.csv");
     }
 
     private void countLines() throws Exception {
@@ -54,7 +55,7 @@ public class LoadDataImpl extends LoadData {
             for (int i = 0; i < 3; i++) {
                 metaData[index][i] = line[i];
             }
-            String id = line[0].substring(line[0].length() - 5);
+            String id = line[0].substring(line[0].length() - 7);
             double longitude = Double.parseDouble(line[1]);
             double latitude = Double.parseDouble(line[2]);
             // nodes

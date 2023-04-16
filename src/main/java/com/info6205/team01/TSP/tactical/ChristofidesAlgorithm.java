@@ -12,6 +12,8 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
 public class ChristofidesAlgorithm {
+    double resultDistance;
+
     public static void main(String[] args) {
         // Build original graph with directed edges
         TestVis tv = new TestVis();
@@ -23,7 +25,7 @@ public class ChristofidesAlgorithm {
         List<Node> hamiltonianCircuit = ca.getHamiltonianCircuit();
 
         // Output graph of Hamiltonian Circuit
-        if(hamiltonianCircuit != null)
+        if (hamiltonianCircuit != null)
             tv.showResult(hamiltonianCircuit.subList(0, hamiltonianCircuit.size() - 1));
     }
 
@@ -33,7 +35,7 @@ public class ChristofidesAlgorithm {
         this.costMatrix = new double[N][N];
         this.nodeToIndex = new HashMap<>();
         int i = 0;
-        for(Node node : nodes) {
+        for (Node node : nodes) {
             nodearray[i] = node;
             nodeToIndex.put(node, i++);
         }
@@ -46,17 +48,17 @@ public class ChristofidesAlgorithm {
 
     private Map<Node, List<DirectedEdge>> buildGraph() {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
-        for(int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             Node node1 = nodearray[i];
-            for(int j = i + 1; j < N; j++) {
+            for (int j = i + 1; j < N; j++) {
                 Node node2 = nodearray[j];
                 // node1 -> node2
-                if(!graph.containsKey(node1)) graph.put(node1, new ArrayList<>());
+                if (!graph.containsKey(node1)) graph.put(node1, new ArrayList<>());
                 DirectedEdge de1 = new DirectedEdge(node1, node2);
                 graph.get(node1).add(de1);
                 costMatrix[i][j] = de1.getWeight();
                 // node2 -> node1
-                if(!graph.containsKey(node2)) graph.put(node2, new ArrayList<>());
+                if (!graph.containsKey(node2)) graph.put(node2, new ArrayList<>());
                 DirectedEdge de2 = new DirectedEdge(node2, node1);
                 graph.get(node2).add(de2);
                 costMatrix[j][i] = de2.getWeight();
@@ -68,7 +70,7 @@ public class ChristofidesAlgorithm {
     public void run() {
         // Build MST with Prim Algorithm;
         Map<Node, List<DirectedEdge>> mst = Prim();
-        if(mst == null) {
+        if (mst == null) {
             System.out.println("MST is invalid");
             return;
         }
@@ -93,15 +95,15 @@ public class ChristofidesAlgorithm {
 
         // Path length of Hamiltonian Circuit;
         double sum = 0.0;
-        if(hamiltonianCircuit != null) {
-            for(int i = 1; i < hamiltonianCircuit.size(); i++) {
+        if (hamiltonianCircuit != null) {
+            for (int i = 1; i < hamiltonianCircuit.size(); i++) {
                 Node from = hamiltonianCircuit.get(i - 1), to = hamiltonianCircuit.get(i);
                 DirectedEdge e = new DirectedEdge(from, to);
                 sum += e.getWeight();
             }
+            this.resultDistance = sum;
             System.out.println("Best tour length: " + sum);
-        }
-        else System.out.println("Hamiltonian Circult is NULL!");
+        } else System.out.println("Hamiltonian Circult is NULL!");
     }
 
     private Map<Node, List<DirectedEdge>> Prim() {
@@ -115,17 +117,17 @@ public class ChristofidesAlgorithm {
         heap.offer(new DirectedEdge(new Node("-1", 0, 0), nodearray[0], 0));
         dist[0] = 0.0;
 
-        while(!heap.isEmpty()) {
+        while (!heap.isEmpty()) {
             DirectedEdge e = heap.poll();
             int u = nodeToIndex.get(e.getTo());
 
-            if(st[u]) continue;
+            if (st[u]) continue;
 
             st[u] = true;
             parent[u] = nodeToIndex.get(e.getFrom()) == null ? -1 : nodeToIndex.get(e.getFrom());
 
-            for(int v = 0; v < N; v++) {
-                if(costMatrix[u][v] != 0 && !st[v] && costMatrix[u][v] < dist[v]) {
+            for (int v = 0; v < N; v++) {
+                if (costMatrix[u][v] != 0 && !st[v] && costMatrix[u][v] < dist[v]) {
                     dist[v] = costMatrix[u][v];
                     heap.add(new DirectedEdge(nodearray[u], nodearray[v], dist[v]));
                 }
@@ -133,9 +135,9 @@ public class ChristofidesAlgorithm {
         }
 
         Map<Node, List<DirectedEdge>> mst = new HashMap<>();
-        for(Node node : nodearray) mst.put(node, new ArrayList<>());
+        for (Node node : nodearray) mst.put(node, new ArrayList<>());
 
-        for(int i = 1; i < N; i++) {
+        for (int i = 1; i < N; i++) {
             mst.get(nodearray[i]).add(
                     new DirectedEdge(nodearray[i], nodearray[parent[i]], costMatrix[i][parent[i]])
             );
@@ -146,7 +148,7 @@ public class ChristofidesAlgorithm {
 
         // Validate MST
         MSTValidation valid = new MSTValidation(originalGraph, mst);
-        if(valid.validateMST()) return mst;
+        if (valid.validateMST()) return mst;
         return null;
     }
 
@@ -154,19 +156,19 @@ public class ChristofidesAlgorithm {
     private Map<Node, List<DirectedEdge>> oddDegreeSubgraph(Map<Node, List<DirectedEdge>> MST) {
         // find all "odd-degree nodes" in MST
         Set<Node> oddNodes = new HashSet<>();
-        for(Node node : MST.keySet()) {
-            if(MST.get(node).size() % 2 == 1) oddNodes.add(node);
+        for (Node node : MST.keySet()) {
+            if (MST.get(node).size() % 2 == 1) oddNodes.add(node);
         }
 
         // Construct subgraph with original graph
         Map<Node, List<DirectedEdge>> subgraph = new HashMap<>();
-        for(Node node : oddNodes)
+        for (Node node : oddNodes)
             subgraph.put(node, new ArrayList<>());
 
-        for(Node from : oddNodes) {
-            for(DirectedEdge e : originalGraph.get(from)) {
+        for (Node from : oddNodes) {
+            for (DirectedEdge e : originalGraph.get(from)) {
                 Node to = e.getTo();
-                if(oddNodes.contains(to)) subgraph.get(from).add(e);
+                if (oddNodes.contains(to)) subgraph.get(from).add(e);
             }
         }
 
@@ -185,9 +187,9 @@ public class ChristofidesAlgorithm {
         Map<Node, List<DirectedEdge>> multiGraph = new HashMap<>();
 
         // Must use deep copy
-        for(Node node : MST.keySet()) {
+        for (Node node : MST.keySet()) {
             multiGraph.put(node, new ArrayList<>());
-            for(DirectedEdge e : MST.get(node)) {
+            for (DirectedEdge e : MST.get(node)) {
                 multiGraph.get(node).add(new DirectedEdge(e));
             }
         }
@@ -205,9 +207,9 @@ public class ChristofidesAlgorithm {
         Map<Node, List<DirectedEdge>> graph = new HashMap<>();
 
         // Must use deep copy
-        for(Node node : multiGraph.keySet()) {
+        for (Node node : multiGraph.keySet()) {
             graph.put(node, new ArrayList<>());
-            for(DirectedEdge e : multiGraph.get(node)) {
+            for (DirectedEdge e : multiGraph.get(node)) {
                 graph.get(node).add(new DirectedEdge(e));
             }
         }
@@ -219,7 +221,7 @@ public class ChristofidesAlgorithm {
 
     // Convert Eulerian Circuit to Hamiltonian Circuit
     private List<Node> convertHamiltonianCircuit(List<Node> eulerianCircuit) {
-        if(eulerianCircuit == null) return null;
+        if (eulerianCircuit == null) return null;
 
         HamiltonianCircuit hc = new HamiltonianCircuit(eulerianCircuit);
         List<Node> hamiltonianCircuit = hc.convertEulerianToHamiltonian();
@@ -229,9 +231,9 @@ public class ChristofidesAlgorithm {
     // Visualize
     private void vistualize(Map<Node, List<DirectedEdge>> g) {
         List<UndirectedEdge> ue = new ArrayList<>();
-        for(List<DirectedEdge> list : g.values()) {
-            for(DirectedEdge de : list) {
-                if(!ue.contains(de.toUndirectedEdge()))
+        for (List<DirectedEdge> list : g.values()) {
+            for (DirectedEdge de : list) {
+                if (!ue.contains(de.toUndirectedEdge()))
                     ue.add(de.toUndirectedEdge());
             }
         }
@@ -265,6 +267,10 @@ public class ChristofidesAlgorithm {
     public List<Node> getTour() {
         int n = this.hamiltonianCircuit.size();
         return this.hamiltonianCircuit.subList(0, n - 1);
+    }
+
+    public double getMinDistance() {
+        return resultDistance;
     }
 
     public List<Node> getHamiltonianCircuit() {

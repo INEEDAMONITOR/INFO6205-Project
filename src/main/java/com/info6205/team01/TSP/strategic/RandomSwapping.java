@@ -47,7 +47,7 @@ public class RandomSwapping {
     }
 
     public List<Node> run() {
-        return run(nodes.size() * nodes.size() * 200, false, null);
+        return run(nodes.size() * nodes.size() * 20000, false, null);
     }
 
     public List<Node> run(int repeatTime, boolean getGos, List<GraphOperation> gos) {
@@ -176,7 +176,7 @@ public class RandomSwapping {
 
     public List<GraphOperation> getGos() {
         List<GraphOperation> gos = new ArrayList<>();
-        this.run(nodes.size() * 20000, true, gos);
+        this.run(nodes.size() * nodes.size() * 20000, true, gos);
         return gos;
     }
 

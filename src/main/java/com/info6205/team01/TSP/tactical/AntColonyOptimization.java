@@ -19,20 +19,24 @@ public class AntColonyOptimization {
         /* --------------------------------------------------------------------- */
         // Initialize variables for ACO
         tv = new TestVis();
-        List<Node> nodes = tv.nodes.subList(0, 10);
+        Preprocessing pc = new Preprocessing();
+        List<Node> nodes = pc.getNodes();
 
-        ChristofidesAlgorithm ca = new ChristofidesAlgorithm(nodes);
-        ca.run();
-        List<Node> christofidesGraph = ca.getTour();
+//        ChristofidesAlgorithm ca = new ChristofidesAlgorithm(nodes);
+//        ca.run();
+//        List<Node> christofidesGraph = ca.getTour();
 
-
-        // AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0,1, 5);
-        AntColonyOptimization aco = new AntColonyOptimization(christofidesGraph, 10, 100, 0,1, 5);
+        AntColonyOptimization aco = new AntColonyOptimization(nodes, 10, 100, 0, 1, 5);
+        // AntColonyOptimization aco = new AntColonyOptimization(christofidesGraph, 10, 100, 0,1, 5);
 
         aco.run();
         aco.result();
         tv.showResult(aco.getTour());
-        tv.showResult((aco.resultForTestVis()));
+        // tv.showResult((aco.resultForTestVis()));
+    }
+
+    public double getMinDistance() {
+        return bestTourLength;
     }
 
     public AntColonyOptimization(List<Node> nodes, int ants, int iterations, double evapRate, int alpha, int beta) {
@@ -60,20 +64,15 @@ public class AntColonyOptimization {
             }
         }
 
-        // Create Whole Graph & costMatrix with all nodes
-//        this.costMatrix = new double[N][N];
-//        this.originalGraph = buildGraph();
+//        for(int k = 1; k < N; k++) {
+//            pheromoneMatrix[k - 1][k] = 1.0 / (double) (N * N * N);
+//            pheromoneMatrix[k][k - 1] = pheromoneMatrix[k - 1][k];
+//        }
+//        pheromoneMatrix[0][N - 1] = pheromoneMatrix[N - 1][0] = 1.0 / (double) (N * N * N);
 
-        double INF = Double.POSITIVE_INFINITY / 2;
+        // Create Whole Graph & costMatrix with all nodes
         this.costMatrix = new double[N][N];
-        for(int k = 0; k < N; k++) {
-            Arrays.fill(costMatrix[k], INF);
-        }
-        for(int k = 1; k < N; k++) {
-            costMatrix[k - 1][k] = new DirectedEdge(nodes.get(k - 1), nodes.get(k)).getWeight();
-            costMatrix[k][k - 1] = costMatrix[k - 1][k];
-        }
-        costMatrix[0][N - 1] = costMatrix[N - 1][0] = new DirectedEdge(nodes.get(0), nodes.get(N - 1)).getWeight();
+        this.originalGraph = buildGraph();
     }
 
     private Map<Node, List<DirectedEdge>> buildGraph() {
@@ -182,7 +181,7 @@ public class AntColonyOptimization {
     }
 
     public void result() {
-        System.out.println("Best tour length: " + bestTourLength);
+        System.out.println("ACO Algorithm Best tour length: " + bestTourLength);
     }
 
     public List<Node> resultForTestVis() {
@@ -198,7 +197,7 @@ public class AntColonyOptimization {
 
     public List<Node> getTour() {
         List<Node> tour = new ArrayList<>();
-        for(int i = 0; i < bestTour.size(); i++) {
+        for (int i = 0; i < bestTour.size(); i++) {
             tour.add(nodearray[bestTour.get(i)]);
         }
         return tour;

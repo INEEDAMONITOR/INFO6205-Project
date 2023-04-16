@@ -20,7 +20,6 @@ public class TwoOpt {
         tour = new ArrayList<>(nodes);
         length = tour.size();
         minDistance = calculateDistance(tour);
-
     }
 
     public void optimize() {
@@ -91,7 +90,6 @@ public class TwoOpt {
         }
         int lastIndex = IDToIndex.get(tour.get(length - 1).getId());
         int firstIndex = IDToIndex.get(tour.get(0).getId());
-        ;
         distance += distances[lastIndex][firstIndex];
 
         return distance;
