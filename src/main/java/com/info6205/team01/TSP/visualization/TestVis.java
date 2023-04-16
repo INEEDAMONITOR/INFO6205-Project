@@ -1,10 +1,9 @@
 package com.info6205.team01.TSP.visualization;
 
 import com.info6205.team01.TSP.Graph.Node;
-import com.info6205.team01.TSP.Graph.UndirectedEdge;
-import com.info6205.team01.TSP.tactical.AntColonyOptimization;
 import com.info6205.team01.TSP.tactical.GreedyHeuristic;
 import com.info6205.team01.TSP.util.LoadCSVData;
+import com.info6205.team01.TSP.util.LoadData;
 import com.info6205.team01.TSP.util.Preprocessing;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -23,14 +22,14 @@ public class TestVis {
         nodes.add(new Node("5", 0.05328, 51.604349));
         Preprocessing preprocessing = new Preprocessing();
         GreedyHeuristic gh = new GreedyHeuristic(preprocessing.getNodes().subList(0, 15));
-        tv.showResult(gh.getMinNodes());
+        tv.showResult(gh.getTour());
     }
 
     public List<Node> nodes;
 
     public TestVis() {
         try {
-            LoadCSVData loader = new LoadCSVData();
+            LoadData loader = LoadCSVData.data;
             nodes = loader.nodes;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -38,6 +37,7 @@ public class TestVis {
     }
 
     public void showResult(List<Node> nodes) {
+
         System.setProperty("org.graphstream.ui", "swing");
         Graph graph = new SingleGraph("Tutorial 1");
         graph.setAttribute("ui.stylesheet", "node{\n" +
@@ -61,7 +61,7 @@ public class TestVis {
             Node prev = nodes.get(i - 1);
             graph.addEdge(cur.getId() + prev.getId(), cur.getId(), prev.getId()).setAttribute("length", Node.getDistance(cur, prev));
             graph.getEdge(cur.getId() + prev.getId()).addAttribute("ui.class", "highlight");
-            sleep();
+//            sleep();
         }
         Node cur = nodes.get(0);
         Node prev = nodes.get(nodes.size() - 1);

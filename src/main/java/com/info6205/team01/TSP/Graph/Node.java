@@ -12,8 +12,12 @@ public class Node {
         return degree;
     }
 
-    public void increseDegree() {
+    public void increaseDegree() {
         this.degree++;
+    }
+
+    public void decreaseDegree() {
+        this.degree--;
     }
 
     public String getId() {

@@ -4,7 +4,6 @@ import com.info6205.team01.TSP.Graph.UndirectedEdge;
 import com.info6205.team01.TSP.Graph.Node;
 import com.info6205.team01.TSP.util.Preprocessing;
 import com.info6205.team01.TSP.visualization.GraphOperation;
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
@@ -47,12 +46,7 @@ public class GreedyHeuristic {
             }
             graph.addEdge(node1.getId() + node2.getId(), node1.getId(), node2.getId()).setAttribute("length", edge.getWeight());
         });
-//        graph.addNode("A");
-//        graph.addNode("B");
-//        graph.addNode("C");
-//        graph.addEdge("AB", "A", "B");
-//        graph.addEdge("BC", "B", "C");
-//        graph.addEdge("CA", "C", "A");
+
 
         graph.display();
         Node node1 = new Node("1", 1, 1);
@@ -60,7 +54,6 @@ public class GreedyHeuristic {
         Node node3 = new Node("3", 1, 1);
         List<UndirectedEdge> e = new ArrayList<>();
         e.add(new UndirectedEdge(node1, node2));
-//        e.add(new UndirectedEdge(node2, node3));
     }
 
 
@@ -75,6 +68,10 @@ public class GreedyHeuristic {
     }
 
     public List<UndirectedEdge> findMinRoute() {
+        return findMinRoute(true);
+    }
+
+    public List<UndirectedEdge> findMinRoute(boolean getGos) {
         // Add nodes into min-heap
         int counter = 0;
         for (int i = 0; i < nodes.size() - 1; i++) {
@@ -82,33 +79,39 @@ public class GreedyHeuristic {
                 Node node1 = nodes.get(i);
                 Node node2 = nodes.get(j);
                 edgesWeightMinHeap.offer(new UndirectedEdge(node1, node2));
-                // Vis
-//                gos.add(GraphOperation.addEdge(node1, node2));
             }
         }
         List<UndirectedEdge> resEdges = new ArrayList<>();
         UndirectedEdge initEdge = edgesWeightMinHeap.poll();
-        initEdge.getNodes()[0].increseDegree();
-        initEdge.getNodes()[1].increseDegree();
+        initEdge.getNodes()[0].increaseDegree();
+        initEdge.getNodes()[1].increaseDegree();
         resEdges.add(initEdge);
         // Vis
-        gos.add(GraphOperation.addEdge(initEdge));
-        gos.add(GraphOperation.highlightEdge(initEdge));
-        gos.add(GraphOperation.unhighlightEdge(initEdge));
+        if (getGos) {
+            gos.add(GraphOperation.addEdge(initEdge));
+            gos.add(GraphOperation.highlightEdge(initEdge));
+            gos.add(GraphOperation.unhighlightEdge(initEdge));
+        }
         counter = 2;
         while (!edgesWeightMinHeap.isEmpty()) {
             UndirectedEdge edge = edgesWeightMinHeap.poll();
             Node[] nodes = edge.getNodes();
             Node node1 = nodes[0];
             Node node2 = nodes[1];
-            gos.add(GraphOperation.addEdge(edge).setLayout(GraphOperation.Layout.HIGHLIGHT));
+            if (getGos) {
+                gos.add(GraphOperation.addEdge(edge).setLayout(GraphOperation.Layout.HIGHLIGHT));
+            }
             if (node1.getDegree() >= 2 || node2.getDegree() >= 2) {
-                gos.add(GraphOperation.removeEdge(edge));
+                if (getGos) {
+                    gos.add(GraphOperation.removeEdge(edge));
+                }
                 continue;
             }
 
             if (isNode1ReachableNode2(resEdges, node1, node2)) {
-                gos.add(GraphOperation.removeEdge(edge));
+                if (getGos) {
+                    gos.add(GraphOperation.removeEdge(edge));
+                }
                 continue;
             }
             if (node1.getDegree() == 0 && node2.getDegree() == 0) {
@@ -116,9 +119,11 @@ public class GreedyHeuristic {
             } else {
                 counter += 1;
             }
-            node1.increseDegree();
-            node2.increseDegree();
-            gos.add(GraphOperation.unhighlightEdge(edge));
+            node1.increaseDegree();
+            node2.increaseDegree();
+            if (getGos) {
+                gos.add(GraphOperation.unhighlightEdge(edge));
+            }
             resEdges.add(edge);
             if (counter == nodes.length) {
                 break;
@@ -130,7 +135,7 @@ public class GreedyHeuristic {
             if (node.getDegree() == 1) {
                 if (start == null) {
                     start = node;
-                    node.increseDegree();
+                    node.increaseDegree();
                 } else {
                     end = node;
                     break;
@@ -138,7 +143,10 @@ public class GreedyHeuristic {
             }
         }
         resEdges.add(new UndirectedEdge(start, end));
-        gos.add(GraphOperation.addEdge(start, end));
+        if (getGos) {
+            gos.add(GraphOperation.addEdge(start, end));
+        }
+        this.edges = resEdges;
         return resEdges;
     }
 
@@ -177,8 +185,9 @@ public class GreedyHeuristic {
         return false;
     }
 
-    public List<Node> getMinNodes() {
-        List<UndirectedEdge> edges = new ArrayList<>(findMinRoute());
+    public List<Node> getTour() {
+        if (tour != null && !tour.isEmpty()) return tour;
+        List<UndirectedEdge> edges = this.getResultEdges();
         List<Node> res = new ArrayList<>();
         Set<Node> visited = new HashSet<>();
 
@@ -194,7 +203,6 @@ public class GreedyHeuristic {
             for (int i = 0; i < edges.size(); i++) {
                 Node next = edges.get(i).containsNodes(cur);
                 if (next != null && !visited.contains(next)) {
-                    System.out.println(next);
                     cur = next;
                     visited.add(cur);
                     res.add(next);
@@ -202,16 +210,28 @@ public class GreedyHeuristic {
                     continue;
                 }
             }
-            System.out.println(edges.size());
         }
+        tour = res;
         return res;
     }
+
     public List<GraphOperation> getGos() {
+        if (gos == null || gos.isEmpty()) {
+            findMinRoute(true);
+        }
         return gos;
     }
 
+    public List<UndirectedEdge> getResultEdges() {
+        if (edges == null || edges.isEmpty()) {
+            edges = findMinRoute();
+        }
+        return edges;
+    }
+
     List<Node> nodes;
-    //    double[][] adjacentMatrix;
+    List<Node> tour;
+    List<UndirectedEdge> edges;
     private final PriorityQueue<UndirectedEdge> edgesWeightMinHeap;
     List<GraphOperation> gos = new ArrayList<>();
 
