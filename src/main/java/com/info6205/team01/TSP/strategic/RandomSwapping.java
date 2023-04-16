@@ -26,7 +26,6 @@ public class RandomSwapping {
             Node n2 = tour.get(i - 1);
             totalDis += Node.getDistance(n1, n2);
         }
-        System.out.println("Total Dis: " + totalDis);
         RandomSwapping rs = new RandomSwapping(tour);
         TestVis tv = new TestVis();
 //        tv.showResult(tour);
@@ -48,7 +47,7 @@ public class RandomSwapping {
     }
 
     public List<Node> run() {
-        return run(nodes.size() * nodes.size() * 200000, false, null);
+        return run(nodes.size() * nodes.size() * 200, false, null);
     }
 
     public List<Node> run(int repeatTime, boolean getGos, List<GraphOperation> gos) {
@@ -172,7 +171,6 @@ public class RandomSwapping {
             Node n2 = randomSwappedNodes.get(i - 1);
             totalDis += Node.getDistance(n1, n2);
         }
-        System.out.println("RS Total Dis: " + totalDis);
         return randomSwappedNodes;
     }
 
@@ -180,5 +178,15 @@ public class RandomSwapping {
         List<GraphOperation> gos = new ArrayList<>();
         this.run(nodes.size() * 20000, true, gos);
         return gos;
+    }
+
+    public double getMinDistance() {
+        List<Node> nodes = this.run();
+        int min = 0;
+        min += Node.getDistance(nodes.get(0), nodes.get(nodes.size() - 1));
+        for (int i = 1; i < nodes.size(); i++) {
+            min += Node.getDistance(nodes.get(i - 1), nodes.get(i));
+        }
+        return min;
     }
 }

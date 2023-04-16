@@ -26,7 +26,7 @@ public class AntColonyOptimization {
 
         aco.run();
 
-//        aco.result();
+        aco.result();
 
         tv.showResult((aco.resultForTestVis()));
     }

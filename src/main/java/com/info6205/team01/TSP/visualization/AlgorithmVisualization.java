@@ -90,7 +90,6 @@ public class AlgorithmVisualization {
             changeEdge(graph, go);
             sleep();
         }
-        System.out.println("Done");
     }
 
     private void changeEdge(Graph graph, GraphOperation go) {

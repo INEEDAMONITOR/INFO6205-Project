@@ -22,6 +22,7 @@ public class TwoOpt {
         minDistance = calculateDistance(tour);
 
     }
+
     public void optimize() {
         List<Node> newTour;
         boolean improvement = true;
@@ -29,7 +30,7 @@ public class TwoOpt {
         while (improvement) {
             improvement = false;
 
-            for (int i = 1; i < length-1; i++) {
+            for (int i = 1; i < length - 1; i++) {
                 for (int j = i + 1; j < length; j++) {
                     // 2-opt swap
                     newTour = twoOptSwap(tour, i, j);
@@ -39,10 +40,10 @@ public class TwoOpt {
                     if (newDist < minDistance) {
                         // new tour is better, keep it
                         // add graph change info
-                        int secondTo = j==length-1 ? 0 : j+1;
-                        gos.add(GraphOperation.removeEdge(tour.get(i-1), tour.get(i)));
+                        int secondTo = j == length - 1 ? 0 : j + 1;
+                        gos.add(GraphOperation.removeEdge(tour.get(i - 1), tour.get(i)));
                         gos.add(GraphOperation.removeEdge(tour.get(j), tour.get(secondTo)));
-                        gos.add(GraphOperation.addEdge(tour.get(i-1), tour.get(j)));
+                        gos.add(GraphOperation.addEdge(tour.get(i - 1), tour.get(j)));
                         gos.add(GraphOperation.addEdge(tour.get(i), tour.get(secondTo)));
                         tour = newTour;
                         minDistance = newDist;
@@ -51,6 +52,10 @@ public class TwoOpt {
                 }
             }
         }
+    }
+
+    public double getMinDistance() {
+        return minDistance;
     }
 
     // helper method for performing a 2-opt swap
@@ -81,11 +86,12 @@ public class TwoOpt {
         double distance = 0;
         for (int i = 0; i < length - 1; i++) {
             int index1 = IDToIndex.get(tour.get(i).getId());
-            int index2 = IDToIndex.get(tour.get(i+1).getId());
+            int index2 = IDToIndex.get(tour.get(i + 1).getId());
             distance += distances[index1][index2];
         }
-        int lastIndex = IDToIndex.get(tour.get(length-1).getId());
-        int firstIndex = IDToIndex.get(tour.get(0).getId());;
+        int lastIndex = IDToIndex.get(tour.get(length - 1).getId());
+        int firstIndex = IDToIndex.get(tour.get(0).getId());
+        ;
         distance += distances[lastIndex][firstIndex];
 
         return distance;

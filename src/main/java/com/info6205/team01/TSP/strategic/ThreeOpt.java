@@ -25,6 +25,11 @@ public class ThreeOpt {
         minDistance = calculateDistance(tour);
 
     }
+
+    public double getMinDistance() {
+        return minDistance;
+    }
+
     public void optimize() {
         List<Node> newTour;
         int n = tour.size();
@@ -43,14 +48,14 @@ public class ThreeOpt {
 
                         if (newDist < minDistance) {
                             // new tour is better, keep it
-                            gos.add(GraphOperation.removeEdge(tour.get(i-1), tour.get(i)));
-                            gos.add(GraphOperation.removeEdge(tour.get(j-1), tour.get(j)));
-                            gos.add(GraphOperation.removeEdge(tour.get(k-1), tour.get(k)));
-                            gos.add(GraphOperation.removeEdge(tour.get(n-1), tour.get(0)));
-                            gos.add(GraphOperation.addEdge(tour.get(i-1), tour.get(k)));
-                            gos.add(GraphOperation.addEdge(tour.get(n-1), tour.get(j)));
-                            gos.add(GraphOperation.addEdge(tour.get(k-1), tour.get(i)));
-                            gos.add(GraphOperation.addEdge(tour.get(j-1), tour.get(0)));
+                            gos.add(GraphOperation.removeEdge(tour.get(i - 1), tour.get(i)));
+                            gos.add(GraphOperation.removeEdge(tour.get(j - 1), tour.get(j)));
+                            gos.add(GraphOperation.removeEdge(tour.get(k - 1), tour.get(k)));
+                            gos.add(GraphOperation.removeEdge(tour.get(n - 1), tour.get(0)));
+                            gos.add(GraphOperation.addEdge(tour.get(i - 1), tour.get(k)));
+                            gos.add(GraphOperation.addEdge(tour.get(n - 1), tour.get(j)));
+                            gos.add(GraphOperation.addEdge(tour.get(k - 1), tour.get(i)));
+                            gos.add(GraphOperation.addEdge(tour.get(j - 1), tour.get(0)));
                             tour = newTour;
                             improvement = true;
                             minDistance = newDist;
@@ -78,11 +83,12 @@ public class ThreeOpt {
         double distance = 0;
         for (int i = 0; i < length - 1; i++) {
             int index1 = IDToIndex.get(tour.get(i).getId());
-            int index2 = IDToIndex.get(tour.get(i+1).getId());
+            int index2 = IDToIndex.get(tour.get(i + 1).getId());
             distance += distances[index1][index2];
         }
-        int lastIndex = IDToIndex.get(tour.get(length-1).getId());
-        int firstIndex = IDToIndex.get(tour.get(0).getId());;
+        int lastIndex = IDToIndex.get(tour.get(length - 1).getId());
+        int firstIndex = IDToIndex.get(tour.get(0).getId());
+        ;
         distance += distances[lastIndex][firstIndex];
 
         return distance;

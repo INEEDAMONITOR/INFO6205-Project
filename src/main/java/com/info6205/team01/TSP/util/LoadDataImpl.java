@@ -22,7 +22,7 @@ public class LoadDataImpl extends LoadData {
     }
 
     public LoadDataImpl() throws Exception {
-        new LoadDataImpl("./src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv");
+        this("src/main/java/com/info6205/team01/TSP/resources/crimeSample.csv");
     }
 
     private void countLines() throws Exception {
