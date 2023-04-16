@@ -1,8 +1,6 @@
 package com.info6205.team01.TSP.visualization;
 
 import com.info6205.team01.TSP.Graph.Node;
-import com.info6205.team01.TSP.Graph.UndirectedEdge;
-import com.info6205.team01.TSP.tactical.AntColonyOptimization;
 import com.info6205.team01.TSP.tactical.GreedyHeuristic;
 import com.info6205.team01.TSP.util.LoadCSVData;
 import com.info6205.team01.TSP.util.LoadData;
@@ -24,7 +22,7 @@ public class TestVis {
         nodes.add(new Node("5", 0.05328, 51.604349));
         Preprocessing preprocessing = new Preprocessing();
         GreedyHeuristic gh = new GreedyHeuristic(preprocessing.getNodes().subList(0, 15));
-        tv.showResult(gh.getMinNodes());
+        tv.showResult(gh.getTour());
     }
 
     public List<Node> nodes;

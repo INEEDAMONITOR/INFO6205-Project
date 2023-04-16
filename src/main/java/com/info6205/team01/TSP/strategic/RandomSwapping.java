@@ -15,10 +15,10 @@ public class RandomSwapping {
 
     public static void main(String[] args) {
         Preprocessing preprocessing = new Preprocessing();
-        List<Node> nodes = preprocessing.getNodes().subList(0, 100);
+        List<Node> nodes = preprocessing.getNodes();
         GreedyHeuristic gh = new GreedyHeuristic(nodes);
 
-        List<Node> tour = gh.getMinNodes();
+        List<Node> tour = gh.getTour();
         double totalDis = 0;
         totalDis += Node.getDistance(tour.get(0), tour.get(tour.size() - 1));
         for (int i = 1; i < tour.size(); i++) {
@@ -36,7 +36,7 @@ public class RandomSwapping {
             tourGos.add(GraphOperation.addEdge(tour.get(i - 1), tour.get(i)));
         }
         AlgorithmVisualization av = new AlgorithmVisualization(nodes, rs.getGos(), tourGos);
-        av.setSleepTime(500);
+        av.setSleepTime(100);
         av.showResult();
 //        rs.run();z
     }
@@ -48,7 +48,7 @@ public class RandomSwapping {
     }
 
     public List<Node> run() {
-        return run(nodes.size() * 200000, false, null);
+        return run(nodes.size() * nodes.size() * 200000, false, null);
     }
 
     public List<Node> run(int repeatTime, boolean getGos, List<GraphOperation> gos) {
@@ -101,77 +101,66 @@ public class RandomSwapping {
 //                gos.add(GraphOperation.addEdge(next2, node1).setLayout(GraphOperation.Layout.HIGHLIGHT));
 //            }
 
-            if (prevDis > nextDis) {
-                double totalDisNext = 0;
-                randomSwappedNodes.set(index1, node2);
-                randomSwappedNodes.set(index2, node1);
+//            if (prevDis > nextDis) {
+            double totalDisNext = 0;
+            randomSwappedNodes.set(index1, node2);
+            randomSwappedNodes.set(index2, node1);
 
-                totalDisNext += Node.getDistance(randomSwappedNodes.get(0), randomSwappedNodes.get(length - 1));
-                for (int i = 1; i < randomSwappedNodes.size(); i++) {
-                    Node n1 = randomSwappedNodes.get(i);
-                    Node n2 = randomSwappedNodes.get(i - 1);
-                    totalDisNext += Node.getDistance(n1, n2);
-                }
-                if (totalDisNext >= totalDisPrev) {
-                    randomSwappedNodes.set(index1, node1);
-                    randomSwappedNodes.set(index2, node2);
-//                if (getGos) {
-//                    gos.add(GraphOperation.removeEdge(prev1, node2));
-//                    gos.add(GraphOperation.removeEdge(next1, node2));
-//                    gos.add(GraphOperation.removeEdge(prev2, node1));
-//                    gos.add(GraphOperation.removeEdge(next2, node1));
-//
-//                    gos.add(GraphOperation.addEdge(prev1, node1));
-//                    gos.add(GraphOperation.addEdge(next1, node1));
-//                    gos.add(GraphOperation.addEdge(prev2, node2));
-//                    gos.add(GraphOperation.addEdge(next2, node2));
-//                }
-                } else {
-                    if (getGos) {
-                        if (next1 != node2 && next2 != node1) {
+            totalDisNext += Node.getDistance(randomSwappedNodes.get(0), randomSwappedNodes.get(length - 1));
+            for (int i = 1; i < randomSwappedNodes.size(); i++) {
+                Node n1 = randomSwappedNodes.get(i);
+                Node n2 = randomSwappedNodes.get(i - 1);
+                totalDisNext += Node.getDistance(n1, n2);
+            }
+            if (totalDisNext >= totalDisPrev) {
+                randomSwappedNodes.set(index1, node1);
+                randomSwappedNodes.set(index2, node2);
+            } else {
+                if (getGos) {
+                    if (next1 != node2 && next2 != node1) {
+                        gos.add(GraphOperation.removeEdge(prev1, node1));
+                        gos.add(GraphOperation.removeEdge(next1, node1));
+                        gos.add(GraphOperation.removeEdge(prev2, node2));
+                        gos.add(GraphOperation.removeEdge(next2, node2));
+
+                        gos.add(GraphOperation.addEdge(prev1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                        gos.add(GraphOperation.addEdge(node2, next1).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                        gos.add(GraphOperation.addEdge(prev2, node1).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                        gos.add(GraphOperation.addEdge(node1, next2).setLayout(GraphOperation.Layout.HIGHLIGHT));
+
+                        gos.add(GraphOperation.unhighlightEdge(prev1, node2));
+                        gos.add(GraphOperation.unhighlightEdge(node2, next1));
+                        gos.add(GraphOperation.unhighlightEdge(prev2, node1));
+                        gos.add(GraphOperation.unhighlightEdge(node1, next2));
+                    } else {
+                        if (next1 == node2) {
                             gos.add(GraphOperation.removeEdge(prev1, node1));
-                            gos.add(GraphOperation.removeEdge(next1, node1));
-                            gos.add(GraphOperation.removeEdge(prev2, node2));
-                            gos.add(GraphOperation.removeEdge(next2, node2));
+                            gos.add(GraphOperation.removeEdge(node1, node2));
+                            gos.add(GraphOperation.removeEdge(node2, next2));
 
                             gos.add(GraphOperation.addEdge(prev1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                            gos.add(GraphOperation.addEdge(node2, next1).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                            gos.add(GraphOperation.addEdge(prev2, node1).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                            gos.add(GraphOperation.addEdge(node1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
                             gos.add(GraphOperation.addEdge(node1, next2).setLayout(GraphOperation.Layout.HIGHLIGHT));
 
                             gos.add(GraphOperation.unhighlightEdge(prev1, node2));
-                            gos.add(GraphOperation.unhighlightEdge(node2, next1));
-                            gos.add(GraphOperation.unhighlightEdge(prev2, node1));
+                            gos.add(GraphOperation.unhighlightEdge(node1, node2));
                             gos.add(GraphOperation.unhighlightEdge(node1, next2));
-                        } else {
-                            if (next1 == node2) {
-                                gos.add(GraphOperation.removeEdge(prev1, node1));
-                                gos.add(GraphOperation.removeEdge(node1, node2));
-                                gos.add(GraphOperation.removeEdge(node2, next2));
+                        } else if (next2 == node1) {
+                            gos.add(GraphOperation.removeEdge(prev2, node2));
+                            gos.add(GraphOperation.removeEdge(node1, node2));
+                            gos.add(GraphOperation.removeEdge(node1, next1));
 
-                                gos.add(GraphOperation.addEdge(prev1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                                gos.add(GraphOperation.addEdge(node1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                                gos.add(GraphOperation.addEdge(node1, next2).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                            gos.add(GraphOperation.addEdge(prev2, node1).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                            gos.add(GraphOperation.addEdge(node1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
+                            gos.add(GraphOperation.addEdge(node2, next1).setLayout(GraphOperation.Layout.HIGHLIGHT));
 
-                                gos.add(GraphOperation.unhighlightEdge(prev1, node2));
-                                gos.add(GraphOperation.unhighlightEdge(node1, node2));
-                                gos.add(GraphOperation.unhighlightEdge(node1, next2));
-                            } else if (next2 == node1) {
-                                gos.add(GraphOperation.removeEdge(prev2, node2));
-                                gos.add(GraphOperation.removeEdge(node1, node2));
-                                gos.add(GraphOperation.removeEdge(node1, next1));
-
-                                gos.add(GraphOperation.addEdge(prev2, node1).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                                gos.add(GraphOperation.addEdge(node1, node2).setLayout(GraphOperation.Layout.HIGHLIGHT));
-                                gos.add(GraphOperation.addEdge(node2, next1).setLayout(GraphOperation.Layout.HIGHLIGHT));
-
-                                gos.add(GraphOperation.unhighlightEdge(prev2, node1));
-                                gos.add(GraphOperation.unhighlightEdge(node1, node2));
-                                gos.add(GraphOperation.unhighlightEdge(node2, next1));
-                            }
+                            gos.add(GraphOperation.unhighlightEdge(prev2, node1));
+                            gos.add(GraphOperation.unhighlightEdge(node1, node2));
+                            gos.add(GraphOperation.unhighlightEdge(node2, next1));
                         }
                     }
                 }
+//                }
             }
 
 
